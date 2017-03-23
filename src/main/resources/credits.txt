@@ -1,0 +1,30 @@
+List of artifacts & licenses:
+
+Font Awesome
+
+* author : Dave Gandy 
+
+* source : http://fontawesome.io/ 
+
+* license : SIL OFL 1.1  (http://fontawesome.io/license/)
+
+
+Digital-7 font
+ 
+* author : Sizenko Alexander
+
+* source : http://www.styleseven.com/php/get_product.php?product=Digital-7
+
+* license : freeware for home use (not for commercial use)
+
+* special note: I changed the filename  to replace space by hyphen in order to simplify loading under Linux 
+
+
+Material Design Icons Web Font
+
+* author:  Austin Andrews 
+
+* source : https://materialdesignicons.com/
+
+* license : SIL OFL 1.1  (https://github.com/Templarian/MaterialDesign/blob/master/license.txt)
+

@@ -9,15 +9,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.util.Duration;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
+
 class WeatherReportImpl implements WeatherReport {
+    private static final Logger LOGGER = LogManager.getLogger(WeatherReportImpl.class);
 
     private boolean reportOn;
     private List<WeatherReportListener> listeners = new ArrayList<>();
@@ -26,7 +29,8 @@ class WeatherReportImpl implements WeatherReport {
     public WeatherReportImpl(String source) {
         this.source = source;
         // update every ten minutes
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10 * 60 * 1000L), this::updateWeather));
+        Duration refresh = Duration.millis(10 * 60 * 1000L);
+        Timeline timeline = new Timeline(new KeyFrame(refresh, this::updateWeather));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
@@ -57,7 +61,6 @@ class WeatherReportImpl implements WeatherReport {
                 listeners.parallelStream().forEach(l -> l.updateWeatherStatus(""));
             } else {
                 String report = getWeatherReport();
-                System.out.println(report);
                 listeners.parallelStream().forEach(l -> l.updateWeatherStatus(report));
             }
         }
@@ -75,7 +78,7 @@ class WeatherReportImpl implements WeatherReport {
             conn.disconnect();
             return parseLine(line);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return null;
     }
@@ -92,7 +95,7 @@ class WeatherReportImpl implements WeatherReport {
             sb.append("°C");
             return sb.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return null;
     }

@@ -3,6 +3,9 @@ package net.mcl.alarmclock.button;
 import javafx.event.ActionEvent;
 import net.mcl.alarmclock.AppContext;
 
+/**
+ * Button to toggle full screen mode.
+ */
 class WindowRestoreButton extends AbstractIconGlowButton {
     public WindowRestoreButton(AppContext context) {
         super(context, context.icons().getWindowRestore());

@@ -3,6 +3,9 @@ package net.mcl.alarmclock.button;
 import javafx.event.ActionEvent;
 import net.mcl.alarmclock.AppContext;
 
+/**
+ * Button to go to the RSS menu.
+ */
 class RssMenuButton extends AbstractIconGlowButton {
 
     public RssMenuButton(AppContext context) {

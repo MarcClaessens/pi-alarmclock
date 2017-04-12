@@ -3,6 +3,9 @@ package net.mcl.alarmclock.button;
 import javafx.event.ActionEvent;
 import net.mcl.alarmclock.AppContext;
 
+/**
+ * Button to go to the main menu.
+ */
 class ButtonMenuButton extends AbstractIconGlowButton {
 
     public ButtonMenuButton(AppContext context) {
@@ -11,6 +14,6 @@ class ButtonMenuButton extends AbstractIconGlowButton {
 
     @Override
     protected void clicked(ActionEvent event) {
-    	getContext().screen().setMenuScene();
+        getContext().screen().setMenuScene();
     }
 }

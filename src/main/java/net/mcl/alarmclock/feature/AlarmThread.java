@@ -3,8 +3,13 @@ package net.mcl.alarmclock.feature;
 import net.mcl.alarmclock.sound.Mp3Player;
 import net.mcl.alarmclock.sound.Sound;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 class AlarmThread extends Thread {
-    private Mp3Player player = new Mp3Player();;
+    private static final Logger LOGGER = LogManager.getLogger(AlarmThread.class);
+
+    private Mp3Player player = new Mp3Player();
     private Sound sound = null;
     private boolean play;
 
@@ -19,18 +24,20 @@ class AlarmThread extends Thread {
 
             if (sound != null && play) {
                 play = false;
-                System.out.println("playing !");
+                LOGGER.debug("playing !");
                 player.play(sound);
                 try {
-                    Thread.sleep(10l);
+                    Thread.sleep(10L);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Interrupted thread", e);
+                    Thread.currentThread().interrupt();
                 }
             } else {
                 try {
-                    Thread.sleep(1_000l);
+                    Thread.sleep(1_000L);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Interrupted thread", e);
+                    Thread.currentThread().interrupt();
                 }
 
             }
@@ -38,13 +45,13 @@ class AlarmThread extends Thread {
     }
 
     public void playSound(Sound sound) {
-        System.out.println("init playing !");
+        LOGGER.debug("init playing !");
         this.sound = sound;
         this.play = true;
     }
 
     public void stopPlaying() {
-        System.out.println("stop playing !");
+        LOGGER.debug("stop playing !");
         player.stop();
         play = false;
     }

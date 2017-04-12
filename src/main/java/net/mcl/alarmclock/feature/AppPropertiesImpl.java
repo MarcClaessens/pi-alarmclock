@@ -1,5 +1,8 @@
 package net.mcl.alarmclock.feature;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -8,18 +11,23 @@ import java.util.Properties;
 
 import net.mcl.alarmclock.CharIcon;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 class AppPropertiesImpl implements AppProperties, IconProvider {
+    private static final Logger LOGGER = LogManager.getLogger(AppPropertiesImpl.class);
 
     private Properties props = null;
 
     public AppPropertiesImpl() {
         props = new Properties();
-        try (InputStream is = AppPropertiesImpl.class.getResourceAsStream("/app.properties")) {
+        File f = new File("app.properties");
+        try (InputStream is = new BufferedInputStream(new FileInputStream(f))) {
             props.load(is);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            LOGGER.error(ioe);
         }
-
     }
 
     private CharIcon charprop(String key) {
@@ -27,23 +35,33 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
     }
 
     @Override
-    public String getAlarmLoudSound() {
+    public String getLoudAlarm() {
         return props.getProperty("alarm.loud.source");
     }
 
     @Override
-    public String getAlarmRadio() {
+    public String getRadioAlarm() {
         return props.getProperty("alarm.radio.source");
     }
 
     @Override
     public int getButtonCount() {
-        return intprop("button.count");
+        return intprop("button.count", "0");
     }
 
     @Override
     public int getButtonLeftCount() {
-        return intprop("button.count.left");
+        return intprop("button.count.left", "0");
+    }
+
+    @Override
+    public int getLoudAlarmRepeatDelay() {
+        return intprop("alarm.loud.repeatdelayseconds", "10");
+    }
+
+    @Override
+    public int getLoudAlarmActivationDelay() {
+        return intprop("alarm.loud.activationdelayminutes", "10");
     }
 
     @Override
@@ -101,23 +119,24 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
         return props.getProperty("weather.source");
     }
 
-    private int intprop(String key) {
-        return Integer.parseInt(props.getProperty(key, "0"));
+    private int intprop(String key, String defaultValue) {
+        return Integer.parseInt(props.getProperty(key, defaultValue));
     }
 
-	@Override
-	public CharIcon getRss() {
+    @Override
+    public CharIcon getRss() {
         return charprop("icon.rss");
-	}
+    }
 
-	@Override
-	public List<RssSource> getRssSources() {
-		List<RssSource> rss = new ArrayList<>();
-		int count = Integer.parseInt(props.getProperty("rss.count", "0"));
-		for (int i=1; i<=count; i++) {
-			String [] parts = props.getProperty("rss.source" + i).split(",");
-			rss.add(new RssSource(parts[0], parts[1]));			
-		}
-		return rss;
-	}
+    @Override
+    public List<RssSource> getRssSources() {
+        List<RssSource> rss = new ArrayList<>();
+        int count = Integer.parseInt(props.getProperty("rss.count", "0"));
+        for (int i = 1; i <= count; i++) {
+            String [] parts = props.getProperty("rss.source" + i).split(",");
+            rss.add(new RssSource(parts[0], parts[1]));            
+        }
+        return rss;
+    }
+
 }

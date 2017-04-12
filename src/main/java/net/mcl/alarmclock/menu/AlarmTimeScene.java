@@ -12,6 +12,19 @@ import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CSS;
 import net.mcl.alarmclock.button.ButtonType;
 
+/**
+ * Scene to set the alarm time.  
+ * 
+ * Time can be changed by clicking buttons.
+ * There are 2 buttons to add / subtract 1 hour per click.
+ * There are 2 buttons to add / subtract 10 minutes per click.
+ * There are 2 buttons to add / subtract 1 minute per click.
+ * 
+ * Changing the minutes can update the hour: 08:00 - 10 minutes becomes 07:50
+ * 
+ * The time is saved when this scene is exited (see Main).
+ * Note that the up/down buttons are likely to become misaligned when changing the font.
+ */
 public class AlarmTimeScene extends Scene {
     private final BorderPane borderpane;
     private final AppContext context;
@@ -36,7 +49,7 @@ public class AlarmTimeScene extends Scene {
     }
 
     private Node getClock() {
-        GridPane grid = new GridPane();
+        final GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(0, 10, 0, 10));
@@ -44,12 +57,12 @@ public class AlarmTimeScene extends Scene {
 
         //grid.setGridLinesVisible(true);
 
-        TimeAdjustButton hoursup = new TimeAdjustButton(context, true, true, 1, true);
-        TimeAdjustButton mins10up = new TimeAdjustButton(context, true, false, 10);
-        TimeAdjustButton mins1up = new TimeAdjustButton(context, true, false, 1);
-        TimeAdjustButton hoursdown = new TimeAdjustButton(context, false, true, 1, true);
-        TimeAdjustButton mins10down = new TimeAdjustButton(context, false, false, 10);
-        TimeAdjustButton mins1down = new TimeAdjustButton(context, false, false, 1);
+        final TimeAdjustButton hoursup = new TimeAdjustButton(context, true, true, 1, true);
+        final TimeAdjustButton mins10up = new TimeAdjustButton(context, true, false, 10);
+        final TimeAdjustButton mins1up = new TimeAdjustButton(context, true, false, 1);
+        final TimeAdjustButton hoursdown = new TimeAdjustButton(context, false, true, 1, true);
+        final TimeAdjustButton mins10down = new TimeAdjustButton(context, false, false, 10);
+        final TimeAdjustButton mins1down = new TimeAdjustButton(context, false, false, 1);
 
         grid.add(hoursup, 0, 0);
         grid.add(mins10up, 1, 0);

@@ -5,6 +5,9 @@ import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CSS;
 import net.mcl.alarmclock.feature.WeatherReportListener;
 
+/**
+ * Label for displaying the weather report.
+ */
 class ClockMessageLabel extends Label implements WeatherReportListener {
 
     public ClockMessageLabel(AppContext context) {

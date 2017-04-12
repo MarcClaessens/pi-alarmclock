@@ -14,7 +14,13 @@ import javafx.scene.layout.VBox;
 import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CSS;
 import net.mcl.alarmclock.button.ButtonType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+/**
+ * Scene for showing the clock.
+ * Which buttons to show left or right, is defined in the properties file.
+ */
 /*
  * Layout
  * 
@@ -22,17 +28,19 @@ import net.mcl.alarmclock.button.ButtonType;
  *   |      |                 |     |
  *   |      |                 |     |
  *   |  B1  |                 |  B3 |
- *   |      |    Clock        |     |
+ *   |      |  current time   |     |
  *   |      |                 |     |
  *   |  B2  |                 |  B4 |
  *   |      |                 |     |
  *   |      |                 |     |
  *   |------------------------------|
- *   |       any messages           |   
+ *   |       weather report         |   
  *   +------------------------------+
  */
 
 public class ClockScene extends Scene {
+    private static final Logger LOGGER = LogManager.getLogger(ClockScene.class);
+
     private final BorderPane borderpane;
 
     private final List<Button> buttons = new ArrayList<>();
@@ -54,24 +62,30 @@ public class ClockScene extends Scene {
         borderpane.setCenter(getClock());
     }
 
+    /**
+     * Get the pane with the buttons that need to be shown on the left side.
+     * The number of buttons to show on the left side is defined as a property.
+     */
     private Node getLeftButtonsNode() {
         return getButtonsNode(buttons.subList(0, context.props().getButtonLeftCount()));
     }
 
+    /**
+     * Get the pane with the buttons that need to be shown on the right side.
+     * The number of buttons to show is derived from the number shown on the left.
+     */
     private Node getRightButtonsNode() {
         return getButtonsNode(buttons.subList(context.props().getButtonLeftCount(), buttons.size()));
     }
 
     private void prepareButtons() {
         int buttonscount = context.props().getButtonCount();
-        //System.out.println("Clock Scene buttons : ");
         for (int i = 1; i < buttonscount + 1; i++) {
             Button b = ButtonType.getClockButton(context, i);
             if (b != null) {
-                //System.out.println(b);
                 buttons.add(b);
             } else {
-                System.out.println("Couldn't add clock scene button " + i);
+                LOGGER.warn("Couldn't add clock scene button " + i);
             }
         }
     }

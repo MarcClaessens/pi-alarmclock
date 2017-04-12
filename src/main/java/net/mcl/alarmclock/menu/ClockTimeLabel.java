@@ -9,6 +9,9 @@ import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.feature.AlarmTimeListener;
 import net.mcl.alarmclock.feature.CurrentTimeListener;
 
+/**
+ * Label for showing the time.  It is used for both current time and alarm setting.
+ */
 class ClockTimeLabel extends Label implements CurrentTimeListener, AlarmTimeListener {
     private final DateTimeFormatter sdf = DateTimeFormatter.ofPattern("HH:mm");
 

@@ -5,6 +5,9 @@ import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CharIcon;
 import net.mcl.alarmclock.button.AbstractIconGlowButton;
 
+/**
+ * Button to adjust the alarm time setting.
+ */
 class TimeAdjustButton extends AbstractIconGlowButton {
     private final int diff;
     private final boolean up;

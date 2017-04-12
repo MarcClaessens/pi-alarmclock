@@ -1,29 +1,37 @@
 package net.mcl.alarmclock.button;
 
 import net.mcl.alarmclock.AppContext;
+import org.apache.logging.log4j.LogManager;
 
-public enum ButtonType implements ButtonFactory {
-    BUTTONMENU(true, false, c -> {return new ButtonMenuButton(c);} ),
-    CLOCKMENU(false, true, c -> {return new ClockMenuButton(c);}),
-    ALARMTIMEMENU(true, true, c -> {return new AlarmtimeMenuButton(c);}),
-    RSSMENU(true, true, c -> {return new RssMenuButton(c);}),
+/**
+ * Enum and factory of all buttons.
+ * Defines also whether the button is allowed in the Clock Scene or the main Button Menu.
+ *
+ */
+public enum ButtonType {
+    BUTTONMENU(true, false, c -> new ButtonMenuButton(c)),
+    CLOCKMENU(false, true, c -> new ClockMenuButton(c)),
+    ALARMTIMEMENU(true, true, c -> new AlarmtimeMenuButton(c)),
+    RSSMENU(true, true, c -> new RssMenuButton(c)),
+    ALARM(true, false, c -> new AlarmButton(c)),
+    WEATHER(true, true, c -> new WeatherButton(c)),
+    MUSIC(true, true, c -> new MusicButton(c)),
+    POWER(false, true, c -> new PowerButton(c)),
+    WINDOWRESTORE(false, true, c -> new WindowRestoreButton(c));
 
-    ALARM(true, false, c -> {return new AlarmButton(c);}),
-    WEATHER(true, true, c -> {return new WeatherButton(c);}),
-    MUSIC(true, true, c -> {return new MusicButton(c);}),
-    
-    
-    POWER(false, true, c -> {return new PowerButton(c);}),
-    WINDOWRESTORE(false, true, c -> {return new WindowRestoreButton(c);});
+    static interface ButtonFactory {
+        AbstractIconGlowButton getButton(AppContext context);
+    }
 
     private boolean allowedInClock;
     private boolean allowedInButtonMenu;
-    private ButtonFactory buttonProvider;
+    private ButtonFactory factoryImpl;
+    
 
-    private ButtonType(boolean allowedInClock, boolean allowedInButtonMenu, ButtonFactory provider) {
+    private ButtonType(boolean allowedInClock, boolean allowedInButtonMenu, ButtonFactory factoryImpl) {
         this.allowedInClock = allowedInClock;
         this.allowedInButtonMenu = allowedInButtonMenu;
-        this.buttonProvider = provider;
+        this.factoryImpl = factoryImpl;
     }
     
     public boolean isAllowedInButtonMenu() {
@@ -34,11 +42,16 @@ public enum ButtonType implements ButtonFactory {
         return allowedInClock;
     }
 
-	@Override
-	public AbstractIconGlowButton getButton(AppContext context) {
-		return buttonProvider.getButton(context);
-	}
-	
+    public AbstractIconGlowButton getButton(AppContext context) {
+        return factoryImpl.getButton(context);
+    }
+    
+    /**
+     * Returns a button based on app.properties config.
+     * @param context - the AppContext from Main
+     * @param buttonNumber - the config number e.g. "3" for configuration line "button3=MUSIC"
+     * @return the matching button instance.
+     */
     public static AbstractIconGlowButton getClockButton(AppContext context, int buttonNumber) {
         ButtonType buttonType;
         String code = context.props().getButtonType(buttonNumber);
@@ -52,7 +65,8 @@ public enum ButtonType implements ButtonFactory {
             if (buttonType.isAllowedInClock()) {
                 return buttonType.getButton(context);
             } else {
-                System.err.println("The " + buttonType + " menu button is not allowed in the clock panel.");
+                LogManager.getLogger(ButtonType.class)
+                        .warn("The " + buttonType + " menu button is not allowed in the clock panel.");
             }
         }
         return null;

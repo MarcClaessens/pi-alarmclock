@@ -1,21 +1,18 @@
 package net.mcl.alarmclock;
 
-import java.net.URL;
-
-import com.rometools.rome.feed.synd.SyndEntry;
-import com.rometools.rome.feed.synd.SyndFeed;
-import com.rometools.rome.io.SyndFeedInput;
-import com.rometools.rome.io.XmlReader;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
 import net.mcl.alarmclock.feature.MainContext;
 import net.mcl.alarmclock.menu.AlarmTimeScene;
 import net.mcl.alarmclock.menu.ClockScene;
 import net.mcl.alarmclock.menu.MenuScene;
 import net.mcl.alarmclock.menu.RssScene;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Main application.
@@ -23,9 +20,11 @@ import net.mcl.alarmclock.menu.RssScene;
  *
  */
 public class Main extends Application implements Screen {
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
+
     private static final double WIDTH = 5.74 * 96;
     private static final double HEIGHT = 4.00 * 96;
-    
+
     private Stage stage = null;
     private Scene clockscene;
     private Scene menuscene;
@@ -35,35 +34,30 @@ public class Main extends Application implements Screen {
     private AppContext context;
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("http.proxyHost", "web-proxy.houston.hpecorp.net");
-        System.setProperty("http.proxyPort", "8080");
-        System.setProperty("https.proxyHost", "web-proxy.houston.hpecorp.net");
-        System.setProperty("https.proxyPort", "8080");
-
         launch(args);
     }
 
     /**
-     * Set application CSS, load Web Fonts and create AppContext instance. 
+     * Set application CSS, load Web Fonts and create AppContext instance.
      */
     @Override
     public void init() throws Exception {
-    	super.init();
+        super.init();
 
-    	String appcss = getClass().getResource("/css/application.css").toExternalForm();
+        String appcss = getClass().getResource("/css/application.css").toExternalForm();
         setUserAgentStylesheet(appcss);
-        
-        loadFonts("/fonts/digital-7-(mono).ttf", "/fonts/fontawesome-webfont.ttf", "/fonts/materialdesignicons-webfont.ttf");
+
+        loadFonts("/fonts/digital-7-(mono).ttf", "/fonts/fontawesome-webfont.ttf",
+                "/fonts/materialdesignicons-webfont.ttf");
 
         context = new MainContext(this);
     }
-    
 
-	private void loadFonts(String ...resources) {
-    	for (String resource : resources) {
-    		Font font = Font.loadFont(Main.class.getResource(resource).toExternalForm(), 18);
-    		System.out.println("Loaded font : " + font);
-    	}
+    private void loadFonts(String... resources) {
+        for (String resource : resources) {
+            Font font = Font.loadFont(Main.class.getResource(resource).toExternalForm(), 18);
+            LOGGER.debug("Loaded font : " + font);
+        }
     }
 
     /**
@@ -71,10 +65,10 @@ public class Main extends Application implements Screen {
      */
     @Override
     public void start(Stage primaryStage) {
-    	primaryStage.setTitle("Alarm Clock");
+        primaryStage.setTitle("Alarm Clock");
         primaryStage.setFullScreenExitHint("");
         stage = primaryStage;
-        
+
         context.screen().exitFullScreen();
 
         createScenes();
@@ -115,20 +109,20 @@ public class Main extends Application implements Screen {
         setScene(alarmtimescene);
     }
 
-
     /**
      * Change main scene to Rss.
      */
-	@Override
-	public void setRssScene() {
-		setScene(rssscene);
-	}
-    
+    @Override
+    public void setRssScene() {
+        setScene(rssscene);
+    }
+
     /**
-     * Switch scene.
-     * If current scene was the AlarmTime, then save the configured alarm time
-     *    (as we don't want to save to file on every click).
-     * @param scene - the scene to change to.
+     * Switch scene. If current scene was the AlarmTime, then save the
+     * configured alarm time (as we don't want to save to file on every click).
+     * 
+     * @param scene
+     *            - the scene to change to.
      */
     private void setScene(Scene scene) {
         if (currentscene == alarmtimescene) {
@@ -139,8 +133,6 @@ public class Main extends Application implements Screen {
         stage.setScene(scene);
         stage.show();
     }
-    
-    
 
     /**
      * Get screen height.

@@ -3,6 +3,10 @@ package net.mcl.alarmclock.button;
 import javafx.event.ActionEvent;
 import net.mcl.alarmclock.AppContext;
 
+/**
+ * Power-off button.
+ *
+ */
 class PowerButton extends AbstractIconGlowButton {
 
     public PowerButton(AppContext context) {

@@ -3,6 +3,9 @@ package net.mcl.alarmclock.button;
 import javafx.event.ActionEvent;
 import net.mcl.alarmclock.AppContext;
 
+/**
+ * Button to go the clock scene.
+ */
 class ClockMenuButton extends AbstractIconGlowButton {
 
     public ClockMenuButton(AppContext context) {
@@ -11,7 +14,7 @@ class ClockMenuButton extends AbstractIconGlowButton {
 
     @Override
     protected void clicked(ActionEvent event) {
-    	getContext().screen().setClockScene();
+        getContext().screen().setClockScene();
     }
 
 }

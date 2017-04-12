@@ -7,27 +7,26 @@ import javafx.scene.layout.FlowPane;
 import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.button.ButtonType;
 
+/**
+ * Scene for showing all menu buttons.
+ */
 public class MenuScene extends Scene {
     private final FlowPane flowPane;
     private final AppContext context;
 
     public MenuScene(AppContext context) {
-        super(new FlowPane());
+        super(new FlowPane(10.0d, 10.0d));
         this.context = context;
         flowPane = (FlowPane) getRoot();
         prepareButtons();
     }
 
     private void prepareButtons() {
-        flowPane.setVgap(10);
-        flowPane.setHgap(10);
         flowPane.setAlignment(Pos.CENTER);
-        //System.out.println("Menu Scene buttons :");
         for (ButtonType t : ButtonType.values()) {
             if (t.isAllowedInButtonMenu()) {
                 Button b = t.getButton(context);
                 flowPane.getChildren().add(b);
-                //System.out.println(b);
             }
         }
     }

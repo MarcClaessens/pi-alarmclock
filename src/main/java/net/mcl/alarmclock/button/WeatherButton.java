@@ -6,6 +6,9 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import net.mcl.alarmclock.AppContext;
 
+/**
+ * Button to toggle reporting the weather report.
+ */
 class WeatherButton extends AbstractIconGlowButton {
     private static final List<WeatherButton> instances = new ArrayList<>();
 

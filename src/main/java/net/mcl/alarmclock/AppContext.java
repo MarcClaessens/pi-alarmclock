@@ -8,7 +8,7 @@ import net.mcl.alarmclock.feature.WeatherReport;
 
 /**
  * Application context.  
- * Enables application wide configuration on all features, without having to resort to singletons.
+ * Enables application wide sharing on all features, without having to resort to singletons.
  */
 public interface AppContext {
     public AlarmClock alarmClock();
@@ -19,7 +19,7 @@ public interface AppContext {
 
     public WeatherReport weather();
 
-    public Screen screen();
+    public AppScreen screen();
     
     public RssFeed rss();
 }

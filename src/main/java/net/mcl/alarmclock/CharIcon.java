@@ -12,7 +12,7 @@ public class CharIcon {
     private final char offChar;
 
     public CharIcon(String config) {
-        String parts[] = config.split(",");
+        String [] parts = config.split(",");
         css = CSS.valueOf(parts[0]);
         onChar = parts[1].charAt(0);
         if (parts.length == 3) {

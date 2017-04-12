@@ -6,6 +6,9 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import net.mcl.alarmclock.AppContext;
 
+/**
+ * Button to toggle playing music.
+ */
 class MusicButton extends AbstractIconGlowButton {
     private static final List<MusicButton> instances = new ArrayList<>();
 

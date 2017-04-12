@@ -5,11 +5,13 @@ import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CSS;
 import net.mcl.alarmclock.button.AbstractGlowButton;
 
+/**
+ * Button for selecting (and retrieving) the RSS source.
+ */
 class RssChoiceButton extends AbstractGlowButton {
-	private final String rssLabel;
-	private final String rssSource;
-	
-	
+    private final String rssLabel;
+    private final String rssSource;
+
     public RssChoiceButton(AppContext context, String rssLabel, String rssSource) {
         super(context);
         setText(rssLabel);
@@ -20,7 +22,6 @@ class RssChoiceButton extends AbstractGlowButton {
 
     @Override
     protected void clicked(ActionEvent event) {
-    	System.out.println("clicked " + rssLabel);
-    	getContext().rss().source(rssLabel, rssSource);
+        getContext().rss().source(rssLabel, rssSource);
     }
 }

@@ -1,5 +1,7 @@
 package net.mcl.alarmclock;
 
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
@@ -16,14 +18,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Main application.
- * 
- *
  */
-public class Main extends Application implements Screen {
+public class Main extends Application implements AppScreen {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
-
-    private static final double WIDTH = 5.74 * 96;
-    private static final double HEIGHT = 4.00 * 96;
 
     private Stage stage = null;
     private Scene clockscene;
@@ -31,10 +28,19 @@ public class Main extends Application implements Screen {
     private Scene rssscene;
     private Scene alarmtimescene;
     private Scene currentscene;
+
+    private static final double WIDTH = 5.74 * 96;
+    private static final double HEIGHT = 4.00 * 96;
+
     private AppContext context;
 
     public static void main(String[] args) throws Exception {
-        launch(args);
+        try {
+            launch(args);
+        } catch (Exception e) {
+            LOGGER.error(e);
+            throw e;
+        }
     }
 
     /**
@@ -42,15 +48,20 @@ public class Main extends Application implements Screen {
      */
     @Override
     public void init() throws Exception {
-        super.init();
+        try {
+            super.init();
 
-        String appcss = getClass().getResource("/css/application.css").toExternalForm();
-        setUserAgentStylesheet(appcss);
+            File f = new File("app.css");
+            setUserAgentStylesheet("file:///" + f.getAbsolutePath());
 
-        loadFonts("/fonts/digital-7-(mono).ttf", "/fonts/fontawesome-webfont.ttf",
-                "/fonts/materialdesignicons-webfont.ttf");
+            loadFonts("/fonts/digital-7-(mono).ttf", "/fonts/fontawesome-webfont.ttf",
+                    "/fonts/materialdesignicons-webfont.ttf");
 
-        context = new MainContext(this);
+            context = new MainContext(this);
+        } catch (Exception e) {
+            LOGGER.error(e);
+            throw e;
+        }
     }
 
     private void loadFonts(String... resources) {
@@ -65,18 +76,24 @@ public class Main extends Application implements Screen {
      */
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Alarm Clock");
-        primaryStage.setFullScreenExitHint("");
-        stage = primaryStage;
+        try {
+            primaryStage.setTitle("Alarm Clock");
+            primaryStage.setFullScreenExitHint("");
+            stage = primaryStage;
 
-        context.screen().exitFullScreen();
+            context.screen().exitFullScreen();
 
-        createScenes();
-        setClockScene();
+            createScenes();
+            setClockScene();
+        } catch (RuntimeException re) {
+            LOGGER.error(re);
+            throw re;
+        }
+
     }
 
     /**
-     * Create scenes and add stylesheets.
+     * Create scenes and add style sheets.
      */
     private void createScenes() {
         clockscene = new ClockScene(context);

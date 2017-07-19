@@ -1,11 +1,12 @@
 package net.mcl.alarmclock.button;
 
 import net.mcl.alarmclock.AppContext;
+
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Enum and factory of all buttons.
- * Defines also whether the button is allowed in the Clock Scene or the main Button Menu.
+ * Enum and factory of all buttons. Defines also whether the button is allowed
+ * in the Clock Scene or the main Button Menu.
  *
  */
 public enum ButtonType {
@@ -17,6 +18,7 @@ public enum ButtonType {
     WEATHER(true, true, c -> new WeatherButton(c)),
     MUSIC(true, true, c -> new MusicButton(c)),
     POWER(false, true, c -> new PowerButton(c)),
+    EXIT(false, true, c -> new ExitButton(c)),
     WINDOWRESTORE(false, true, c -> new WindowRestoreButton(c));
 
     static interface ButtonFactory {
@@ -26,14 +28,13 @@ public enum ButtonType {
     private boolean allowedInClock;
     private boolean allowedInButtonMenu;
     private ButtonFactory factoryImpl;
-    
 
     private ButtonType(boolean allowedInClock, boolean allowedInButtonMenu, ButtonFactory factoryImpl) {
         this.allowedInClock = allowedInClock;
         this.allowedInButtonMenu = allowedInButtonMenu;
         this.factoryImpl = factoryImpl;
     }
-    
+
     public boolean isAllowedInButtonMenu() {
         return allowedInButtonMenu;
     }
@@ -45,11 +46,15 @@ public enum ButtonType {
     public AbstractIconGlowButton getButton(AppContext context) {
         return factoryImpl.getButton(context);
     }
-    
+
     /**
      * Returns a button based on app.properties config.
-     * @param context - the AppContext from Main
-     * @param buttonNumber - the config number e.g. "3" for configuration line "button3=MUSIC"
+     * 
+     * @param context
+     *            - the AppContext from Main
+     * @param buttonNumber
+     *            - the config number e.g. "3" for configuration line
+     *            "button3=MUSIC"
      * @return the matching button instance.
      */
     public static AbstractIconGlowButton getClockButton(AppContext context, int buttonNumber) {

@@ -1,12 +1,14 @@
 package net.mcl.alarmclock.feature;
 
+import javafx.concurrent.Task;
+
 import net.mcl.alarmclock.sound.Mp3Player;
 import net.mcl.alarmclock.sound.Sound;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-class AlarmThread extends Thread {
+class AlarmThread extends Task<Void> {
     private static final Logger LOGGER = LogManager.getLogger(AlarmThread.class);
 
     private Mp3Player player = new Mp3Player();
@@ -14,24 +16,19 @@ class AlarmThread extends Thread {
     private boolean play;
 
     AlarmThread() {
-        super(new ThreadGroup("leave me outside of FX"), "AlarmThread");
-        setDaemon(true);
+        super();
+        Thread th = new Thread(this);
+        th.setDaemon(true);
+        th.start();
     }
 
     @Override
-    public void run() {
+    public Void call() {
         while (true) {
 
             if (sound != null && play) {
                 play = false;
-                LOGGER.debug("playing !");
                 player.play(sound);
-                try {
-                    Thread.sleep(10L);
-                } catch (InterruptedException e) {
-                    LOGGER.error("Interrupted thread", e);
-                    Thread.currentThread().interrupt();
-                }
             } else {
                 try {
                     Thread.sleep(1_000L);
@@ -39,7 +36,6 @@ class AlarmThread extends Thread {
                     LOGGER.error("Interrupted thread", e);
                     Thread.currentThread().interrupt();
                 }
-
             }
         }
     }

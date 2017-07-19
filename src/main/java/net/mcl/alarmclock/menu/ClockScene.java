@@ -11,31 +11,25 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+
 import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CSS;
 import net.mcl.alarmclock.button.ButtonType;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Scene for showing the clock.
- * Which buttons to show left or right, is defined in the properties file.
+ * Scene for showing the clock. Which buttons to show left or right, is defined
+ * in the properties file.
  */
 /*
  * Layout
  * 
- *   +------------------------------+
- *   |      |                 |     |
- *   |      |                 |     |
- *   |  B1  |                 |  B3 |
- *   |      |  current time   |     |
- *   |      |                 |     |
- *   |  B2  |                 |  B4 |
- *   |      |                 |     |
- *   |      |                 |     |
- *   |------------------------------|
- *   |       weather report         |   
- *   +------------------------------+
+ * +------------------------------+ | | | | | | | | | B1 | | B3 | | | current
+ * time | | | | | | | B2 | | B4 | | | | | | | | |
+ * |------------------------------| | weather report |
+ * +------------------------------+
  */
 
 public class ClockScene extends Scene {
@@ -47,6 +41,7 @@ public class ClockScene extends Scene {
     private final Label messages;
     private final ClockTimeLabel clock;
     private final AppContext context;
+    private int rightClicks = 0;
 
     public ClockScene(AppContext context) {
         super(new BorderPane());
@@ -60,11 +55,18 @@ public class ClockScene extends Scene {
         borderpane.setRight(getRightButtonsNode());
         borderpane.setBottom(getLabelNode(messages));
         borderpane.setCenter(getClock());
+
+        this.setOnMouseClicked(x -> {
+            rightClicks++;
+            if (rightClicks == 4) {
+                System.exit(0);
+            }
+        });
     }
 
     /**
-     * Get the pane with the buttons that need to be shown on the left side.
-     * The number of buttons to show on the left side is defined as a property.
+     * Get the pane with the buttons that need to be shown on the left side. The
+     * number of buttons to show on the left side is defined as a property.
      */
     private Node getLeftButtonsNode() {
         return getButtonsNode(buttons.subList(0, context.props().getButtonLeftCount()));
@@ -72,7 +74,8 @@ public class ClockScene extends Scene {
 
     /**
      * Get the pane with the buttons that need to be shown on the right side.
-     * The number of buttons to show is derived from the number shown on the left.
+     * The number of buttons to show is derived from the number shown on the
+     * left.
      */
     private Node getRightButtonsNode() {
         return getButtonsNode(buttons.subList(context.props().getButtonLeftCount(), buttons.size()));

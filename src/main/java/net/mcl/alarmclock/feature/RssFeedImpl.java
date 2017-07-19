@@ -18,9 +18,14 @@ public class RssFeedImpl implements RssFeed {
     private static final Logger LOGGER = LogManager.getLogger(RssFeed.class);
 
     private final List<RssFeedListener> feedlisteners = new ArrayList<>();
+    private final int fetchCount;
 
-	@Override
-	public void source(String label, String source) {
+    public RssFeedImpl(int fetchCount) {
+        this.fetchCount = fetchCount;
+    }
+
+    @Override
+    public void source(String label, String source) {
         if (feedlisteners.isEmpty()) {
             LOGGER.warn("No RSS listeners");
             return;
@@ -41,7 +46,9 @@ public class RssFeedImpl implements RssFeed {
         List<String> content = new ArrayList<>();
         int line = 0;
         for (SyndEntry entry : entries) {
-            content.add(new StringBuilder().append(line).append("- ").append(entry.getTitle()).toString());
+            if (line < fetchCount) {
+                content.add(new StringBuilder().append(line).append("- ").append(entry.getTitle()).toString());
+            }
             line++;
         }
         return content;

@@ -11,6 +11,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.util.Duration;
+
 import net.mcl.alarmclock.sound.FileSound;
 import net.mcl.alarmclock.sound.Sound;
 import net.mcl.alarmclock.sound.WebMp3Sound;
@@ -30,6 +31,7 @@ class AlarmClockImpl implements AlarmClock {
     private final List<AlarmTimeListener> alarmlisteners = new ArrayList<>();
     private final String radioInput;
     private final String secondAlarm;
+
     private final AlarmThread alarmthread;
     private final int repeatdelay;
     private final int louddelay;
@@ -42,7 +44,7 @@ class AlarmClockImpl implements AlarmClock {
         this.radioInput = appprops.getRadioAlarm();
         this.secondAlarm = appprops.getLoudAlarm();
         this.repeatdelay = appprops.getLoudAlarmRepeatDelay() * 1000;
-        this.louddelay = appprops.getLoudAlarmActivationDelay() * 60 * 1000; 
+        this.louddelay = appprops.getLoudAlarmActivationDelay() * 60 * 1000;
     }
 
     /**
@@ -72,13 +74,13 @@ class AlarmClockImpl implements AlarmClock {
     }
 
     /**
-     * Set alarmOn flag to opposite value. 
+     * Set alarmOn flag to opposite value.
      */
     @Override
     public void toggleAlarm() {
         setAlarmOn(!this.alarmOn);
     }
-    
+
     /**
      * Check if music is playing.
      */
@@ -88,7 +90,7 @@ class AlarmClockImpl implements AlarmClock {
     }
 
     /**
-     * Check if alarm is on
+     * Check if alarm is on.
      */
     @Override
     public boolean isAlarmOn() {
@@ -102,27 +104,26 @@ class AlarmClockImpl implements AlarmClock {
             prepareSecundaryAlarm();
         }
     }
-    
+
     private void activateSecundaryAlarm(ActionEvent event) {
-        while (alarmRunning) {
-            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(repeatdelay), this::repeatSecundaryAlarm));
+        if (alarmRunning) {
+            // trigger this same method again in a couple of seconds
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(repeatdelay), this::activateSecundaryAlarm));
             timeline.setCycleCount(1);
             timeline.play();
+            play(secondAlarm);
         }
-    }
-    
-    private void repeatSecundaryAlarm(ActionEvent event) {
-    	play(secondAlarm);
     }
 
     private void prepareSecundaryAlarm() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(louddelay), this::activateSecundaryAlarm));
-        timeline.setCycleCount(1);
-        timeline.play();
-	}
+        Timeline secondAlarmTimeline = new Timeline(
+                new KeyFrame(Duration.millis(louddelay), this::activateSecundaryAlarm));
+        secondAlarmTimeline.setCycleCount(1);
+        secondAlarmTimeline.play();
+    }
 
-	private void play(String input) {
-		alarmthread.stopPlaying();
+    private void play(String input) {
+        alarmthread.stopPlaying();
         LOGGER.debug("Alarm is running for " + input);
         Sound sound;
         if (input.startsWith("http")) {
@@ -134,9 +135,7 @@ class AlarmClockImpl implements AlarmClock {
     }
 
     private void stop() {
-        if (alarmthread.isAlive()) {
-            alarmthread.stopPlaying();
-        }
+        alarmthread.stopPlaying();
     }
 
     @Override

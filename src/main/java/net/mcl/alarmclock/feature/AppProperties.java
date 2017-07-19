@@ -8,9 +8,9 @@ public interface AppProperties {
     String getRadioAlarm();
 
     int getLoudAlarmRepeatDelay();
-    
+
     int getLoudAlarmActivationDelay();
-    
+
     int getButtonCount();
 
     int getButtonLeftCount();
@@ -18,6 +18,8 @@ public interface AppProperties {
     String getButtonType(int buttonNr);
 
     String getWeatherSource();
-    
+
     List<RssSource> getRssSources();
+
+    int getRssFetchCount();
 }

@@ -21,5 +21,7 @@ public interface IconProvider {
 
     CharIcon getMusic();
 
-	CharIcon getRss();
+    CharIcon getRss();
+
+    CharIcon getExit();
 }

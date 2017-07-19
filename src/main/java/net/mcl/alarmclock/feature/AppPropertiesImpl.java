@@ -110,6 +110,11 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
     }
 
     @Override
+    public CharIcon getExit() {
+        return charprop("icon.exit");
+    }
+
+    @Override
     public CharIcon getWindowRestore() {
         return charprop("icon.windowrestore");
     }
@@ -133,10 +138,15 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
         List<RssSource> rss = new ArrayList<>();
         int count = Integer.parseInt(props.getProperty("rss.count", "0"));
         for (int i = 1; i <= count; i++) {
-            String [] parts = props.getProperty("rss.source" + i).split(",");
-            rss.add(new RssSource(parts[0], parts[1]));            
+            String[] parts = props.getProperty("rss.source" + i).split(",");
+            rss.add(new RssSource(parts[0], parts[1]));
         }
         return rss;
+    }
+
+    @Override
+    public int getRssFetchCount() {
+        return intprop("rss.fetchcount", "10");
     }
 
 }

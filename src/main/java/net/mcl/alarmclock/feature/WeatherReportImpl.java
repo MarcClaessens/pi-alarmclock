@@ -53,7 +53,9 @@ class WeatherReportImpl implements WeatherReport, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        updateWeather(true);
+        if (reportOn) {
+            updateWeather(true);
+        }
     }
 
     private void updateWeather(boolean getReport) {

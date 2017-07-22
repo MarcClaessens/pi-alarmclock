@@ -1,11 +1,10 @@
 package net.mcl.alarmclock.menu;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -19,36 +18,25 @@ import net.mcl.alarmclock.feature.RssSource;
  * automatically refreshed.
  */
 public class RssScene extends BlackPanel implements RssFeedListener {
-    private static final String SEPARATOR = System.getProperty("line.separator");
-    // used to be " /"
-
     private final JLabel marquee = new JLabel();
-    private String marqueeContent = null;
+
+    private final JPanel top;
 
     public RssScene(AppContext context) {
-        super(context, new BorderLayout());
-        context.rss().registerListener(this);
-
-        add(getTop(), BorderLayout.NORTH);
-        add(getCenter(), BorderLayout.CENTER);
-        add(getDefaultBottom(), BorderLayout.SOUTH);
-    }
-
-    /*
-     * the scrolling doesn't work with any pane other than basic ; it also
-     * doesn't work if you put said pane into another e.g. Hbox
-     */
-    private JPanel getCenter() {
-        JPanel pane = new BlackPanel();
-        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-        pane.add(marquee);
+        super(context);
+        setName("RssScene");
         FONTS.PLAIN_STANDARD.applyStyle(marquee);
 
-        return pane;
+        top = getTop();
+        add(top);
+        add(marquee);
+
+        context.registerRightClickListener(marquee);
+        context.rss().registerListener(this);
     }
 
     private JPanel getTop() {
-        JPanel pane = new BlackPanel(new GridBagLayout());
+        JPanel pane = new BlackPanel(getContext(), new FlowLayout(FlowLayout.CENTER, 10, 0));
         for (RssSource source : getContext().props().getRssSources()) {
             pane.add(new RssChoiceButton(getContext(), source.getLabel(), source.getSourceUrl()));
         }
@@ -62,9 +50,10 @@ public class RssScene extends BlackPanel implements RssFeedListener {
 
     @Override
     public void rssContentChanged(List<String> content) {
-        StringBuilder sb = new StringBuilder("<html>");
-        sb.append(content.stream().collect(Collectors.joining("<br>")));
-        sb.append("</html>");
-        marquee.setText(sb.toString());
+        String text = content.stream().collect(Collectors.joining("<br>"));
+        marquee.setPreferredSize(new Dimension(this.getWidth() - 20, this.getHeight() - top.getHeight() - 10));
+        marquee.setSize(new Dimension(this.getWidth() - 20, this.getHeight() - top.getHeight() - 10));
+        marquee.setText("<html>" + text + "<html>");
+        marquee.setAlignmentX(LEFT_ALIGNMENT);
     }
 }

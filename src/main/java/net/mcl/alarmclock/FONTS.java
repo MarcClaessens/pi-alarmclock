@@ -9,10 +9,11 @@ import javax.swing.JComponent;
  * Enum of used Fonts.
  */
 public enum FONTS {
-    CLOCK(114),
-    AWESOME(64),
+    CLOCK(160),
+    AWESOME(78),
     MATERIAL_DESIGN(64),
     PLAIN_STANDARD(18),
+    PLAIN_LARGE(24),
     INVISIBLE_SPACING(18);
 
     private int fontsize;
@@ -32,7 +33,8 @@ public enum FONTS {
         case MATERIAL_DESIGN:
             setFontAndColor(c, "Material Design Icons", Color.BLACK, Color.RED);
             break;
-        case PLAIN_STANDARD:
+        case PLAIN_STANDARD: // fall through
+        case PLAIN_LARGE:
             setFontAndColor(c, "Sans-serif", Color.BLACK, Color.RED);
             break;
         case INVISIBLE_SPACING:

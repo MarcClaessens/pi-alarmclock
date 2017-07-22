@@ -10,15 +10,15 @@ import org.apache.logging.log4j.LogManager;
  *
  */
 public enum ButtonType {
-    BUTTONMENU(true, false, c -> new ButtonMenuButton(c)),
+    BUTTONMENU(false, false, c -> new ButtonMenuButton(c)),
     CLOCKMENU(false, true, c -> new ClockMenuButton(c)),
     ALARMTIMEMENU(true, true, c -> new AlarmtimeMenuButton(c)),
     RSSMENU(true, true, c -> new RssMenuButton(c)),
     ALARM(true, false, c -> new AlarmButton(c)),
     WEATHER(true, true, c -> new WeatherButton(c)),
     MUSIC(true, true, c -> new MusicButton(c)),
-    POWER(false, true, c -> new PowerButton(c)),
-    EXIT(false, true, c -> new ExitButton(c));
+    POWER(true, true, c -> new PowerButton(c)),
+    EXIT(true, true, c -> new ExitButton(c));
 
     static interface ButtonFactory {
         AbstractIconGlowButton getButton(AppContext context);

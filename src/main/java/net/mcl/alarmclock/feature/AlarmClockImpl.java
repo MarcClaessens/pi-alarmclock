@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 
 class AlarmClockImpl implements AlarmClock, ActionListener {
     private static final Logger LOGGER = LogManager.getLogger(AlarmClockImpl.class);
+    private static final String PRIMARY = "PRIMARY";
+    private static final String SECUNDARY = "SECUNDARY";
 
     private boolean alarmOn;
     private boolean alarmRunning;
@@ -32,18 +34,24 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
     private final String secondAlarm;
 
     private final AlarmThread alarmthread;
-    private final int repeatdelay;
     private final int louddelay;
+    private final Timer timerPrimary;
+    private final Timer timerSecundary;
 
     public AlarmClockImpl(AlarmThread alarmthread, AppProperties appprops) {
-        Timer timer = new Timer(500, this);
-        timer.start();
+        timerPrimary = new Timer(500, this);
+        timerPrimary.setActionCommand(PRIMARY);
+        timerPrimary.start();
 
         this.alarmthread = alarmthread;
         this.radioInput = appprops.getRadioAlarm();
         this.secondAlarm = appprops.getLoudAlarm();
-        this.repeatdelay = appprops.getLoudAlarmRepeatDelay() * 1000;
-        this.louddelay = appprops.getLoudAlarmActivationDelay() * 60 * 1000;
+        this.louddelay = appprops.getLoudAlarmActivationDelay();
+
+        int repeatdelay = appprops.getLoudAlarmRepeatDelay() * 1000;
+        timerSecundary = new Timer(repeatdelay, this);
+        timerSecundary.setActionCommand(SECUNDARY);
+
     }
 
     /**
@@ -103,9 +111,9 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
         }
     }
 
-    private void activateSecundaryAlarm(ActionEvent event) {
-        if (alarmRunning) {
-            play(secondAlarm);
+    private void activateSecundaryAlarm() {
+        if (!timerSecundary.isRunning()) {
+            timerSecundary.start();
         }
     }
 
@@ -137,15 +145,24 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        final LocalTime t = LocalTime.now();
-        if (!timelisteners.isEmpty()) {
-            timelisteners.parallelStream().forEach(l -> l.updateCurrentTime(t));
+        if (PRIMARY.equals(ae.getActionCommand())) {
+            final LocalTime t = LocalTime.now();
+            if (!timelisteners.isEmpty()) {
+                timelisteners.parallelStream().forEach(l -> l.updateCurrentTime(t));
+            }
+            if (isAlarmTime(t)) {
+                activatePrimaryAlarm();
+            }
+            if (isSecondAlarmTime(t)) {
+                activateSecundaryAlarm();
+            }
         }
-        if (isAlarmTime(t)) {
-            activatePrimaryAlarm();
-        }
-        if (isSecondAlarmTime(t)) {
-            activateSecundaryAlarm(ae);
+        if (SECUNDARY.equals(ae.getActionCommand())) {
+            if (alarmRunning) {
+                play(secondAlarm);
+            } else {
+                timerSecundary.stop();
+            }
         }
     }
 
@@ -153,7 +170,8 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
         if (alarmTime == null || !alarmOn) {
             return false;
         } else {
-            return alarmTime.getHour() == t.getHour() && alarmTime.getMinute() == t.getMinute();
+            long duration = Duration.between(alarmTime, t).toMillis();
+            return duration > 0 && duration < 1500;
         }
     }
 
@@ -161,9 +179,11 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
         if (alarmTime == null || !alarmOn) {
             return false;
         } else {
-            return Duration.between(alarmTime.plusMinutes(louddelay), t).toMinutes() > louddelay;
+            LocalTime secondAlarm = alarmTime.plusMinutes(louddelay);
+            long duration = Duration.between(secondAlarm, t).toMillis();
+            boolean flag = duration > 0 && duration < 1500;
+            return flag;
         }
-
     }
 
     private void fireAlarmChangedEvent() {

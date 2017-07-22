@@ -4,8 +4,8 @@ import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CharIcon;
 
 /**
- * FX Button with a glowing border and an 1 character "icon" from the defined
- * web fonts. The color is defined in the CSS file.
+ * Button with a glowing border and an 1 character "icon" from the defined web
+ * fonts. The color is defined in the CSS file.
  */
 public abstract class AbstractIconGlowButton extends AbstractGlowButton {
     private final CharIcon charIcon;

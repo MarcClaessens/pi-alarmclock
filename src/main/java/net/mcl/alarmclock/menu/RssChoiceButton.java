@@ -18,7 +18,7 @@ class RssChoiceButton extends AbstractGlowButton {
         setText(rssLabel);
         this.rssLabel = rssLabel;
         this.rssSource = rssSource;
-        FONTS.PLAIN_STANDARD.applyStyle(this);
+        FONTS.PLAIN_LARGE.applyStyle(this);
     }
 
     @Override

@@ -6,10 +6,15 @@ import java.util.List;
 
 import net.mcl.alarmclock.AppContext;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Button to toggle reporting the weather report.
  */
 class WeatherButton extends AbstractIconGlowButton {
+    private static final Logger LOGGER = LogManager.getLogger(WeatherButton.class);
+
     private static final List<WeatherButton> instances = new ArrayList<>();
 
     public WeatherButton(AppContext context) {
@@ -19,6 +24,7 @@ class WeatherButton extends AbstractIconGlowButton {
 
     @Override
     protected void clicked(ActionEvent event) {
+        LOGGER.warn("WeatherButton Event " + event.getSource() + " / " + event.getActionCommand());
         getContext().weather().toggleWeatherReportOn();
         // synchronize with other instances of this button
         for (WeatherButton b : instances) {

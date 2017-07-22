@@ -9,9 +9,9 @@ import net.mcl.alarmclock.feature.WeatherReportListener;
 /**
  * Label for displaying the weather report.
  */
-class ClockMessageLabel extends JLabel implements WeatherReportListener {
+class WeatherReportLabel extends JLabel implements WeatherReportListener {
 
-    public ClockMessageLabel(AppContext context) {
+    public WeatherReportLabel(AppContext context) {
         context.weather().registerListener(this);
         setText("TEST");
         setAlignmentX(CENTER_ALIGNMENT);
@@ -22,7 +22,7 @@ class ClockMessageLabel extends JLabel implements WeatherReportListener {
     public void updateWeatherStatus(String string, boolean show) {
         setText(string);
         if (show) {
-            FONTS.PLAIN_STANDARD.applyStyle(this);
+            FONTS.PLAIN_LARGE.applyStyle(this);
         } else {
             FONTS.INVISIBLE_SPACING.applyStyle(this);
         }

@@ -15,6 +15,6 @@ class ButtonMenuButton extends AbstractIconGlowButton {
 
     @Override
     protected void clicked(ActionEvent event) {
-        getContext().screen().setMenuScene();
+        getContext().screen().toggleMenuPanel();
     }
 }

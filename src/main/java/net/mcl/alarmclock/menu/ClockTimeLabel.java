@@ -20,12 +20,13 @@ class ClockTimeLabel extends JLabel implements CurrentTimeListener, AlarmTimeLis
 
     public ClockTimeLabel(AppContext context) {
         this(context, true);
+        context.registerRightClickListener(this);
     }
 
     public ClockTimeLabel(AppContext context, boolean registerListener) {
         super("00:00");
         FONTS.CLOCK.applyStyle(this);
-        setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
+        setBorder(BorderFactory.createEmptyBorder(10, 0, 40, 0));
         setHorizontalAlignment(JLabel.CENTER);
         setVerticalAlignment(JLabel.CENTER);
 

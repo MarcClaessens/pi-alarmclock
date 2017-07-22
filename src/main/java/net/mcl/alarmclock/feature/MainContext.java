@@ -1,5 +1,11 @@
 package net.mcl.alarmclock.feature;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
+
 import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.AppScreen;
 
@@ -12,6 +18,8 @@ public class MainContext implements AppContext {
     private final WeatherReport weatherReport = new WeatherReportImpl(appProperties.getWeatherSource());
     private final AppScreen screen;
     private final RssFeed rss = new RssFeedImpl(appProperties.getRssFetchCount());
+
+    private int rightClicks;
 
     public MainContext(AppScreen screen) {
         this.screen = screen;
@@ -46,5 +54,20 @@ public class MainContext implements AppContext {
     @Override
     public RssFeed rss() {
         return rss;
+    }
+
+    @Override
+    public void registerRightClickListener(JComponent component) {
+        component.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e) || SwingUtilities.isMiddleMouseButton(e)) {
+                    rightClicks++;
+                    if (rightClicks == 4) {
+                        System.exit(0);
+                    }
+                }
+            }
+        });
     }
 }

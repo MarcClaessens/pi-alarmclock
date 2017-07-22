@@ -26,14 +26,13 @@ public class AlarmTimeScene extends BlackPanel {
     private final ClockTimeLabel clock;
 
     public AlarmTimeScene(AppContext context) {
-        super(context, new BorderLayout());
+        super(context);
+        setName("AlarmTimeScene");
         this.clock = new ClockTimeLabel(context, false);
-
-        add(getClock(), BorderLayout.CENTER);
-        add(getDefaultBottom(), BorderLayout.SOUTH);
+        add(getClockWithTimeButtons());
     }
 
-    private JPanel getClock() {
+    private JPanel getClockWithTimeButtons() {
         final TimeAdjustButton hoursup = new TimeAdjustButton(getContext(), true, true, 1, true);
         final TimeAdjustButton mins10up = new TimeAdjustButton(getContext(), true, false, 10);
         final TimeAdjustButton mins1up = new TimeAdjustButton(getContext(), true, false, 1);
@@ -41,32 +40,41 @@ public class AlarmTimeScene extends BlackPanel {
         final TimeAdjustButton mins10down = new TimeAdjustButton(getContext(), false, false, 10);
         final TimeAdjustButton mins1down = new TimeAdjustButton(getContext(), false, false, 1);
 
-        final JPanel panel1 = new BlackPanel();
+        final JPanel panel1 = new BlackPanel(getContext());
+        panel1.add(blank(1));
         panel1.add(hoursup);
-        panel1.add(blank());
+        panel1.add(blank(7));
         panel1.add(mins10up);
+        panel1.add(blank(1));
         panel1.add(mins1up);
 
-        final JPanel panel2 = new BlackPanel();
+        final JPanel panel2 = new BlackPanel(getContext());
+        panel2.add(blank(1));
         panel2.add(hoursdown);
-        panel2.add(blank());
+        panel2.add(blank(7));
         panel2.add(mins10down);
+        panel2.add(blank(1));
         panel2.add(mins1down);
 
-        final JPanel panel = new BlackPanel(new BorderLayout());
+        final JPanel panel = new BlackPanel(getContext(), new BorderLayout());
         panel.add(panel1, BorderLayout.NORTH);
         panel.add(clock, BorderLayout.CENTER);
         panel.add(panel2, BorderLayout.SOUTH);
 
         // create new panel to keep the above components to getter and centered
-        final JPanel grouppanel = new BlackPanel(new GridBagLayout());
+        final JPanel grouppanel = new BlackPanel(getContext(), new GridBagLayout());
         grouppanel.add(panel);
         return grouppanel;
     }
 
-    private JComponent blank() {
-        JLabel label = new JLabel("ABCD");
+    private JComponent blank(int blanks) {
+        JLabel label = new JLabel();
         FONTS.INVISIBLE_SPACING.applyStyle(label);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < blanks; i++) {
+            sb.append('A');
+        }
+        label.setText(sb.toString());
         return label;
     }
 

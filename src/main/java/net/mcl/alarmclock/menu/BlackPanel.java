@@ -6,7 +6,6 @@ import java.awt.LayoutManager;
 import javax.swing.JPanel;
 
 import net.mcl.alarmclock.AppContext;
-import net.mcl.alarmclock.button.ButtonType;
 
 public class BlackPanel extends JPanel {
 
@@ -14,28 +13,18 @@ public class BlackPanel extends JPanel {
 
     private AppContext context;
 
-    public BlackPanel() {
+    public BlackPanel(AppContext context) {
+        this.context = context;
         setBackground(Color.BLACK);
-    }
-
-    public BlackPanel(LayoutManager layout) {
-        this();
-        setLayout(layout);
+        context.registerRightClickListener(this);
     }
 
     public BlackPanel(AppContext context, LayoutManager layout) {
-        this(layout);
-        this.context = context;
+        this(context);
+        setLayout(layout);
     }
 
     public AppContext getContext() {
         return context;
-    }
-
-    protected JPanel getDefaultBottom() {
-        JPanel box = new BlackPanel();
-        box.add(ButtonType.CLOCKMENU.getButton(getContext()));
-        box.add(ButtonType.BUTTONMENU.getButton(getContext()));
-        return box;
     }
 }

@@ -1,83 +1,73 @@
 package net.mcl.alarmclock.menu;
 
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import net.mcl.alarmclock.AppContext;
-import net.mcl.alarmclock.CSS;
-import net.mcl.alarmclock.button.ButtonType;
+import net.mcl.alarmclock.FONTS;
 
 /**
- * Scene to set the alarm time.  
+ * Scene to set the alarm time.
  * 
- * Time can be changed by clicking buttons.
- * There are 2 buttons to add / subtract 1 hour per click.
- * There are 2 buttons to add / subtract 10 minutes per click.
- * There are 2 buttons to add / subtract 1 minute per click.
+ * Time can be changed by clicking buttons. There are 2 buttons to add /
+ * subtract 1 hour per click. There are 2 buttons to add / subtract 10 minutes
+ * per click. There are 2 buttons to add / subtract 1 minute per click.
  * 
  * Changing the minutes can update the hour: 08:00 - 10 minutes becomes 07:50
  * 
- * The time is saved when this scene is exited (see Main).
- * Note that the up/down buttons are likely to become misaligned when changing the font.
+ * The time is saved when this scene is exited (see Main). Note that the up/down
+ * buttons are likely to become misaligned when changing the font.
  */
-public class AlarmTimeScene extends Scene {
-    private final BorderPane borderpane;
-    private final AppContext context;
+public class AlarmTimeScene extends BlackPanel {
     private final ClockTimeLabel clock;
 
     public AlarmTimeScene(AppContext context) {
-        super(new BorderPane());
-        this.context = context;
-        this.borderpane = (BorderPane) getRoot();
+        super(context, new BorderLayout());
         this.clock = new ClockTimeLabel(context, false);
 
-        borderpane.setCenter(getClock());
-        borderpane.setBottom(getBottom());
+        add(getClock(), BorderLayout.CENTER);
+        add(getDefaultBottom(), BorderLayout.SOUTH);
     }
 
-    private Node getBottom() {
-        HBox box = new HBox();
-        box.setAlignment(Pos.CENTER);
-        box.getChildren().add(ButtonType.CLOCKMENU.getButton(context));
-        box.getChildren().add(ButtonType.BUTTONMENU.getButton(context));
-        return box;
+    private JPanel getClock() {
+        final TimeAdjustButton hoursup = new TimeAdjustButton(getContext(), true, true, 1, true);
+        final TimeAdjustButton mins10up = new TimeAdjustButton(getContext(), true, false, 10);
+        final TimeAdjustButton mins1up = new TimeAdjustButton(getContext(), true, false, 1);
+        final TimeAdjustButton hoursdown = new TimeAdjustButton(getContext(), false, true, 1, true);
+        final TimeAdjustButton mins10down = new TimeAdjustButton(getContext(), false, false, 10);
+        final TimeAdjustButton mins1down = new TimeAdjustButton(getContext(), false, false, 1);
+
+        final JPanel panel1 = new BlackPanel();
+        panel1.add(hoursup);
+        panel1.add(blank());
+        panel1.add(mins10up);
+        panel1.add(mins1up);
+
+        final JPanel panel2 = new BlackPanel();
+        panel2.add(hoursdown);
+        panel2.add(blank());
+        panel2.add(mins10down);
+        panel2.add(mins1down);
+
+        final JPanel panel = new BlackPanel(new BorderLayout());
+        panel.add(panel1, BorderLayout.NORTH);
+        panel.add(clock, BorderLayout.CENTER);
+        panel.add(panel2, BorderLayout.SOUTH);
+
+        // create new panel to keep the above components to getter and centered
+        final JPanel grouppanel = new BlackPanel(new GridBagLayout());
+        grouppanel.add(panel);
+        return grouppanel;
     }
 
-    private Node getClock() {
-        final GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(0, 10, 0, 10));
-        grid.setAlignment(Pos.CENTER);
-
-        //grid.setGridLinesVisible(true);
-
-        final TimeAdjustButton hoursup = new TimeAdjustButton(context, true, true, 1, true);
-        final TimeAdjustButton mins10up = new TimeAdjustButton(context, true, false, 10);
-        final TimeAdjustButton mins1up = new TimeAdjustButton(context, true, false, 1);
-        final TimeAdjustButton hoursdown = new TimeAdjustButton(context, false, true, 1, true);
-        final TimeAdjustButton mins10down = new TimeAdjustButton(context, false, false, 10);
-        final TimeAdjustButton mins1down = new TimeAdjustButton(context, false, false, 1);
-
-        grid.add(hoursup, 0, 0);
-        grid.add(mins10up, 1, 0);
-        grid.add(mins1up, 2, 0);
-
-        CSS.CLOCK_FONT.applyStyle(clock);
-        grid.add(clock, 0, 1, 3, 1);
-
-        grid.add(hoursdown, 0, 2);
-        grid.add(mins10down, 1, 2);
-        grid.add(mins1down, 2, 2);
-
-        GridPane.setHalignment(clock, HPos.CENTER);
-
-        return grid;
+    private JComponent blank() {
+        JLabel label = new JLabel("ABCD");
+        FONTS.INVISIBLE_SPACING.applyStyle(label);
+        return label;
     }
 
 }

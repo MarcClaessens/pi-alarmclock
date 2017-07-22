@@ -1,5 +1,7 @@
 package net.mcl.alarmclock.feature;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,17 +11,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.util.Duration;
+import javax.swing.Timer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-class WeatherReportImpl implements WeatherReport {
+class WeatherReportImpl implements WeatherReport, ActionListener {
     private static final Logger LOGGER = LogManager.getLogger(WeatherReportImpl.class);
 
     private boolean reportOn;
@@ -29,19 +27,17 @@ class WeatherReportImpl implements WeatherReport {
     public WeatherReportImpl(String source) {
         this.source = source;
         // update every ten minutes
-        Duration refresh = Duration.millis(10 * 60 * 1000L);
-        Timeline timeline = new Timeline(new KeyFrame(refresh, this::updateWeather));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        Timer timer = new Timer(1000 * 60 * 10, this);
+        timer.start();
     }
 
     @Override
     public void setWeatherReportOn(boolean messageOn) {
         this.reportOn = messageOn;
         if (!messageOn) {
-            updateWeather(null);
+            updateWeather(false);
         } else {
-            updateWeather(new ActionEvent());
+            updateWeather(true);
         }
     }
 
@@ -55,13 +51,18 @@ class WeatherReportImpl implements WeatherReport {
         listeners.add(l);
     }
 
-    private void updateWeather(ActionEvent event) {
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        updateWeather(true);
+    }
+
+    private void updateWeather(boolean getReport) {
         if (listeners.size() > 0) {
-            if (event == null) {
-                listeners.parallelStream().forEach(l -> l.updateWeatherStatus(""));
+            if (!getReport) {
+                listeners.parallelStream().forEach(l -> l.updateWeatherStatus("ABC", false));
             } else {
                 String report = getWeatherReport();
-                listeners.parallelStream().forEach(l -> l.updateWeatherStatus(report));
+                listeners.parallelStream().forEach(l -> l.updateWeatherStatus(report, true));
             }
         }
     }
@@ -104,5 +105,4 @@ class WeatherReportImpl implements WeatherReport {
     public boolean isWeatherReportOn() {
         return reportOn;
     }
-
 }

@@ -1,8 +1,9 @@
 package net.mcl.alarmclock.menu;
 
-import javafx.event.ActionEvent;
+import java.awt.event.ActionEvent;
+
 import net.mcl.alarmclock.AppContext;
-import net.mcl.alarmclock.CSS;
+import net.mcl.alarmclock.FONTS;
 import net.mcl.alarmclock.button.AbstractGlowButton;
 
 /**
@@ -17,7 +18,7 @@ class RssChoiceButton extends AbstractGlowButton {
         setText(rssLabel);
         this.rssLabel = rssLabel;
         this.rssSource = rssSource;
-        CSS.STANDARD_FONT.applyStyle(this);
+        FONTS.PLAIN_STANDARD.applyStyle(this);
     }
 
     @Override

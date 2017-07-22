@@ -1,16 +1,15 @@
 package net.mcl.alarmclock.feature;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.util.Duration;
+import javax.swing.Timer;
 
 import net.mcl.alarmclock.sound.FileSound;
 import net.mcl.alarmclock.sound.Sound;
@@ -19,7 +18,7 @@ import net.mcl.alarmclock.sound.WebMp3Sound;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-class AlarmClockImpl implements AlarmClock {
+class AlarmClockImpl implements AlarmClock, ActionListener {
     private static final Logger LOGGER = LogManager.getLogger(AlarmClockImpl.class);
 
     private boolean alarmOn;
@@ -37,9 +36,9 @@ class AlarmClockImpl implements AlarmClock {
     private final int louddelay;
 
     public AlarmClockImpl(AlarmThread alarmthread, AppProperties appprops) {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500L), this::updateTime));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        Timer timer = new Timer(500, this);
+        timer.start();
+
         this.alarmthread = alarmthread;
         this.radioInput = appprops.getRadioAlarm();
         this.secondAlarm = appprops.getLoudAlarm();
@@ -101,25 +100,13 @@ class AlarmClockImpl implements AlarmClock {
         if (!alarmRunning) {
             alarmRunning = true;
             play(radioInput);
-            prepareSecundaryAlarm();
         }
     }
 
     private void activateSecundaryAlarm(ActionEvent event) {
         if (alarmRunning) {
-            // trigger this same method again in a couple of seconds
-            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(repeatdelay), this::activateSecundaryAlarm));
-            timeline.setCycleCount(1);
-            timeline.play();
             play(secondAlarm);
         }
-    }
-
-    private void prepareSecundaryAlarm() {
-        Timeline secondAlarmTimeline = new Timeline(
-                new KeyFrame(Duration.millis(louddelay), this::activateSecundaryAlarm));
-        secondAlarmTimeline.setCycleCount(1);
-        secondAlarmTimeline.play();
     }
 
     private void play(String input) {
@@ -148,13 +135,17 @@ class AlarmClockImpl implements AlarmClock {
         alarmlisteners.add(l);
     }
 
-    private void updateTime(ActionEvent event) {
+    @Override
+    public void actionPerformed(ActionEvent ae) {
         final LocalTime t = LocalTime.now();
         if (!timelisteners.isEmpty()) {
             timelisteners.parallelStream().forEach(l -> l.updateCurrentTime(t));
         }
         if (isAlarmTime(t)) {
             activatePrimaryAlarm();
+        }
+        if (isSecondAlarmTime(t)) {
+            activateSecundaryAlarm(ae);
         }
     }
 
@@ -164,6 +155,15 @@ class AlarmClockImpl implements AlarmClock {
         } else {
             return alarmTime.getHour() == t.getHour() && alarmTime.getMinute() == t.getMinute();
         }
+    }
+
+    private synchronized boolean isSecondAlarmTime(LocalTime t) {
+        if (alarmTime == null || !alarmOn) {
+            return false;
+        } else {
+            return Duration.between(alarmTime.plusMinutes(louddelay), t).toMinutes() > louddelay;
+        }
+
     }
 
     private void fireAlarmChangedEvent() {

@@ -115,11 +115,6 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
     }
 
     @Override
-    public CharIcon getWindowRestore() {
-        return charprop("icon.windowrestore");
-    }
-
-    @Override
     public String getWeatherSource() {
         return props.getProperty("weather.source");
     }
@@ -149,4 +144,8 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
         return intprop("rss.fetchcount", "10");
     }
 
+    @Override
+    public String getCustomFontSizes() {
+        return props.getProperty("font.size");
+    }
 }

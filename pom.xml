@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.mcl</groupId>
 	<artifactId>marc-pi</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -24,13 +24,6 @@
 			<version>1.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>openjfx</groupId>
-			<artifactId>openjfx</artifactId>
-			<version>2.2</version>
-			<systemPath>/usr/share/java/openjfx/jre/lib/ext/jfxrt.jar</systemPath>
-			<scope>system</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20160810</version>
@@ -40,6 +33,11 @@
 			<artifactId>rome</artifactId>
 			<version>1.7.1</version>
 		</dependency>
+        <dependency>
+            <artifactId>miglayout-swing</artifactId>
+            <groupId>com.miglayout</groupId>
+            <version>5.0</version>
+        </dependency>
 	</dependencies>
 
 	<build>

@@ -1,6 +1,7 @@
 package net.mcl.alarmclock.menu;
 
-import javafx.event.ActionEvent;
+import java.awt.event.ActionEvent;
+
 import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CharIcon;
 import net.mcl.alarmclock.button.AbstractIconGlowButton;
@@ -20,6 +21,7 @@ class TimeAdjustButton extends AbstractIconGlowButton {
 
     public TimeAdjustButton(AppContext context, boolean up, boolean hours, int diff, boolean doubleSize) {
         super(context, context.icons().getArrow());
+        setAlignmentX(CENTER_ALIGNMENT);
         this.up = up;
         this.hours = hours;
         this.diff = diff;

@@ -18,8 +18,7 @@ public enum ButtonType {
     WEATHER(true, true, c -> new WeatherButton(c)),
     MUSIC(true, true, c -> new MusicButton(c)),
     POWER(false, true, c -> new PowerButton(c)),
-    EXIT(false, true, c -> new ExitButton(c)),
-    WINDOWRESTORE(false, true, c -> new WindowRestoreButton(c));
+    EXIT(false, true, c -> new ExitButton(c));
 
     static interface ButtonFactory {
         AbstractIconGlowButton getButton(AppContext context);

@@ -15,8 +15,6 @@ public interface IconProvider {
 
     CharIcon getPower();
 
-    CharIcon getWindowRestore();
-
     CharIcon getArrow();
 
     CharIcon getMusic();

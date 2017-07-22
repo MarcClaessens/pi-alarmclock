@@ -1,19 +1,21 @@
 package net.mcl.alarmclock.menu;
 
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import net.mcl.alarmclock.AppContext;
-import net.mcl.alarmclock.CSS;
 import net.mcl.alarmclock.button.ButtonType;
 
 import org.apache.logging.log4j.LogManager;
@@ -32,34 +34,35 @@ import org.apache.logging.log4j.Logger;
  * +------------------------------+
  */
 
-public class ClockScene extends Scene {
+public class ClockScene extends BlackPanel {
     private static final Logger LOGGER = LogManager.getLogger(ClockScene.class);
 
-    private final BorderPane borderpane;
-
-    private final List<Button> buttons = new ArrayList<>();
-    private final Label messages;
+    private final List<JButton> buttons = new ArrayList<>();
+    private final JLabel messages;
     private final ClockTimeLabel clock;
-    private final AppContext context;
     private int rightClicks = 0;
 
     public ClockScene(AppContext context) {
-        super(new BorderPane());
-        this.borderpane = (BorderPane) getRoot();
-        this.context = context;
+        super(context, new BorderLayout());
         clock = new ClockTimeLabel(context);
         messages = new ClockMessageLabel(context);
 
         prepareButtons();
-        borderpane.setLeft(getLeftButtonsNode());
-        borderpane.setRight(getRightButtonsNode());
-        borderpane.setBottom(getLabelNode(messages));
-        borderpane.setCenter(getClock());
 
-        this.setOnMouseClicked(x -> {
-            rightClicks++;
-            if (rightClicks == 4) {
-                System.exit(0);
+        add(clock, BorderLayout.CENTER);
+        add(getLeftButtonsNode(), BorderLayout.WEST);
+        add(getRightButtonsNode(), BorderLayout.EAST);
+        add(getLabelNode(messages), BorderLayout.SOUTH);
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e) || SwingUtilities.isMiddleMouseButton(e)) {
+                    rightClicks++;
+                    if (rightClicks == 4) {
+                        System.exit(0);
+                    }
+                }
             }
         });
     }
@@ -68,8 +71,8 @@ public class ClockScene extends Scene {
      * Get the pane with the buttons that need to be shown on the left side. The
      * number of buttons to show on the left side is defined as a property.
      */
-    private Node getLeftButtonsNode() {
-        return getButtonsNode(buttons.subList(0, context.props().getButtonLeftCount()));
+    private JComponent getLeftButtonsNode() {
+        return getButtonsNode(buttons.subList(0, getContext().props().getButtonLeftCount()));
     }
 
     /**
@@ -77,14 +80,14 @@ public class ClockScene extends Scene {
      * The number of buttons to show is derived from the number shown on the
      * left.
      */
-    private Node getRightButtonsNode() {
-        return getButtonsNode(buttons.subList(context.props().getButtonLeftCount(), buttons.size()));
+    private JComponent getRightButtonsNode() {
+        return getButtonsNode(buttons.subList(getContext().props().getButtonLeftCount(), buttons.size()));
     }
 
     private void prepareButtons() {
-        int buttonscount = context.props().getButtonCount();
+        int buttonscount = getContext().props().getButtonCount();
         for (int i = 1; i < buttonscount + 1; i++) {
-            Button b = ButtonType.getClockButton(context, i);
+            JButton b = ButtonType.getClockButton(getContext(), i);
             if (b != null) {
                 buttons.add(b);
             } else {
@@ -93,25 +96,25 @@ public class ClockScene extends Scene {
         }
     }
 
-    private Node getClock() {
-        CSS.CLOCK_FONT.applyStyle(clock);
-        return getLabelNode(clock);
+    private JComponent getLabelNode(JLabel label) {
+        Box box = Box.createVerticalBox();
+        box.add(label);
+        return box;
     }
 
-    private Node getLabelNode(Label label) {
-        TilePane tile = new TilePane();
-        tile.getChildren().add(label);
-        tile.setAlignment(Pos.CENTER);
-        return tile;
-    }
+    private JComponent getButtonsNode(List<JButton> buttons) {
 
-    private Node getButtonsNode(List<Button> buttons) {
-        VBox vbox = new VBox();
-        vbox.setAlignment(Pos.CENTER);
-        for (Button b : buttons) {
-            vbox.getChildren().add(b);
+        JPanel panel = new BlackPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.NONE;
+        c.gridy = 0;
+        for (JButton b : buttons) {
+            c.gridy += 1;
+            panel.add(b, c);
         }
-        return vbox;
+
+        return panel;
+
     }
 
 }

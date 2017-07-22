@@ -22,4 +22,6 @@ public interface AppProperties {
     List<RssSource> getRssSources();
 
     int getRssFetchCount();
+
+    String getCustomFontSizes();
 }

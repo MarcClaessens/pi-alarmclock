@@ -1,11 +1,15 @@
 package net.mcl.alarmclock;
 
-import java.io.File;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.text.MessageFormat;
+import java.text.ParseException;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.text.Font;
-import javafx.stage.Stage;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import net.mcl.alarmclock.feature.MainContext;
 import net.mcl.alarmclock.menu.AlarmTimeScene;
@@ -19,24 +23,29 @@ import org.apache.logging.log4j.Logger;
 /**
  * Main application.
  */
-public class Main extends Application implements AppScreen {
+public class Main extends JFrame implements AppScreen {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-    private Stage stage = null;
-    private Scene clockscene;
-    private Scene menuscene;
-    private Scene rssscene;
-    private Scene alarmtimescene;
-    private Scene currentscene;
-
-    private static final double WIDTH = 5.74 * 96;
-    private static final double HEIGHT = 4.00 * 96;
-
+    private JPanel clockscene;
+    private JPanel menuscene;
+    private JPanel rssscene;
+    private JPanel alarmtimescene;
+    private JPanel currentscene;
     private AppContext context;
 
     public static void main(String[] args) throws Exception {
         try {
-            launch(args);
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                // default should be cross-platform look-and-feel
+                e.printStackTrace();
+            }
+            Main app = new Main();
+            app.setSize(WIDTH, HEIGHT);
+
+            app.init();
+
         } catch (Exception e) {
             LOGGER.error(e);
             throw e;
@@ -46,60 +55,68 @@ public class Main extends Application implements AppScreen {
     /**
      * Set application CSS, load Web Fonts and create AppContext instance.
      */
-    @Override
     public void init() throws Exception {
         try {
-            super.init();
-
-            File f = new File("app.css");
-            setUserAgentStylesheet("file:///" + f.getAbsolutePath());
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             loadFonts("/fonts/digital-7-(mono).ttf", "/fonts/fontawesome-webfont.ttf",
                     "/fonts/materialdesignicons-webfont.ttf");
 
             context = new MainContext(this);
+
+            setCustomFontSizes();
+            getContentPane().setBackground(Color.black);
+            setFullScreen();
+
+            createScenes();
+            setVisible(true);
+
+            getRootPane().setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         } catch (Exception e) {
             LOGGER.error(e);
             throw e;
         }
     }
 
-    private void loadFonts(String... resources) {
-        for (String resource : resources) {
-            Font font = Font.loadFont(Main.class.getResource(resource).toExternalForm(), 18);
-            LOGGER.debug("Loaded font : " + font);
+    private void setFullScreen() {
+        setUndecorated(true);
+        GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].setFullScreenWindow(this);
+    }
+
+    private void setCustomFontSizes() throws ParseException {
+        String sizes = context.props().getCustomFontSizes();
+        if (sizes != null) {
+            String[] fontsizes = sizes.split(",");
+            MessageFormat format = new MessageFormat("{0}({1})");
+            for (String source : fontsizes) {
+                Object[] parsedResult = format.parse(source);
+                FONTS.valueOf((String) parsedResult[0]).alterDefaultSize(Integer.parseInt((String) parsedResult[1]));
+            }
         }
     }
 
-    /**
-     * Center the stage and create scenes.
-     */
-    @Override
-    public void start(Stage primaryStage) {
-        try {
-            primaryStage.setTitle("Alarm Clock");
-            primaryStage.setFullScreenExitHint("");
-            stage = primaryStage;
-
-            context.screen().exitFullScreen();
-
-            createScenes();
-            setClockScene();
-        } catch (RuntimeException re) {
-            LOGGER.error(re);
-            throw re;
+    private void loadFonts(String... resources) throws Exception {
+        for (String resource : resources) {
+            Font font = Font.createFont(Font.TRUETYPE_FONT, Main.class.getResource(resource).openStream());
+            font.deriveFont(Font.PLAIN, 18);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+            LOGGER.debug("Loaded font : " + font);
         }
-
     }
 
     /**
      * Create scenes and add style sheets.
      */
     private void createScenes() {
-        clockscene = new ClockScene(context);
-        menuscene = new MenuScene(context);
         alarmtimescene = new AlarmTimeScene(context);
+        menuscene = new MenuScene(context);
+        clockscene = new ClockScene(context);
         rssscene = new RssScene(context);
+
+        setAlarmTimeScene();
+        setMenuScene();
+        setRssScene();
+        setClockScene();
     }
 
     /**
@@ -141,57 +158,17 @@ public class Main extends Application implements AppScreen {
      * @param scene
      *            - the scene to change to.
      */
-    private void setScene(Scene scene) {
-        if (currentscene == alarmtimescene) {
-            context.alarmClock().saveAlarmTime();
+    private void setScene(JPanel scene) {
+        if (currentscene != null) {
+            if (currentscene == alarmtimescene) {
+                context.alarmClock().saveAlarmTime();
+            }
+            currentscene.setVisible(false);
+            getContentPane().remove(currentscene);
         }
+        getContentPane().add(scene);
+        pack();
+        scene.setVisible(true);
         currentscene = scene;
-        stage.hide();
-        stage.setScene(scene);
-        stage.show();
     }
-
-    /**
-     * Get screen height.
-     */
-    @Override
-    public double getHeight() {
-        return stage.getHeight();
-    }
-
-    /**
-     * Get screen width.
-     */
-    @Override
-    public double getWidth() {
-        return stage.getWidth();
-    }
-
-    /**
-     * Set to full screen.
-     */
-    @Override
-    public void fullScreen() {
-        stage.setFullScreen(true);
-    }
-
-    /**
-     * Set screen to default size and center it.
-     */
-    @Override
-    public void exitFullScreen() {
-        stage.setFullScreen(false);
-        stage.setHeight(HEIGHT);
-        stage.setWidth(WIDTH);
-        stage.centerOnScreen();
-    }
-
-    /**
-     * Returns true if the application is using full screen.
-     */
-    @Override
-    public boolean isFullScreen() {
-        return stage.isFullScreen();
-    }
-
 }

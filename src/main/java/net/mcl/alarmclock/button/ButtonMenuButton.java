@@ -1,6 +1,7 @@
 package net.mcl.alarmclock.button;
 
-import javafx.event.ActionEvent;
+import java.awt.event.ActionEvent;
+
 import net.mcl.alarmclock.AppContext;
 
 /**

@@ -1,14 +1,12 @@
 package net.mcl.alarmclock.feature;
 
-import javafx.concurrent.Task;
-
 import net.mcl.alarmclock.sound.Mp3Player;
 import net.mcl.alarmclock.sound.Sound;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-class AlarmThread extends Task<Void> {
+class AlarmThread implements Runnable {
     private static final Logger LOGGER = LogManager.getLogger(AlarmThread.class);
 
     private Mp3Player player = new Mp3Player();
@@ -23,7 +21,7 @@ class AlarmThread extends Task<Void> {
     }
 
     @Override
-    public Void call() {
+    public void run() {
         while (true) {
 
             if (sound != null && play) {

@@ -6,13 +6,13 @@ package net.mcl.alarmclock;
  * The Off icon is optional.
  */
 public class CharIcon {
-    private final FONTS css;
+    private final AppFonts css;
     private final char onChar;
     private final char offChar;
 
     public CharIcon(String config) {
         String[] parts = config.split(",");
-        css = FONTS.valueOf(parts[0]);
+        css = AppFonts.valueOf(parts[0]);
         onChar = parts[1].charAt(0);
         if (parts.length == 3) {
             offChar = parts[2].charAt(0);
@@ -21,7 +21,7 @@ public class CharIcon {
         }
     }
 
-    public FONTS getCss() {
+    public AppFonts getCss() {
         return css;
     }
 

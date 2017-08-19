@@ -1,25 +1,29 @@
-package net.mcl.alarmclock.menu;
+package net.mcl.alarmclock.swing;
 
-import java.awt.Color;
 import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
 
+import net.mcl.alarmclock.AppColor;
 import net.mcl.alarmclock.AppContext;
 
-public class BlackPanel extends JPanel {
+/**
+ * JPanel that takes the background color of the application. Registers a
+ * right-click listener to quit.
+ */
+public class AppJPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
     private AppContext context;
 
-    public BlackPanel(AppContext context) {
+    public AppJPanel(AppContext context) {
         this.context = context;
-        setBackground(Color.BLACK);
+        setBackground(AppColor.BACKGROUND.getColor());
         context.registerRightClickListener(this);
     }
 
-    public BlackPanel(AppContext context, LayoutManager layout) {
+    public AppJPanel(AppContext context, LayoutManager layout) {
         this(context);
         setLayout(layout);
     }

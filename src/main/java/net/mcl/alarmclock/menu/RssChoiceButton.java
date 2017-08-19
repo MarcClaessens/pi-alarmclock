@@ -3,8 +3,8 @@ package net.mcl.alarmclock.menu;
 import java.awt.event.ActionEvent;
 
 import net.mcl.alarmclock.AppContext;
-import net.mcl.alarmclock.FONTS;
-import net.mcl.alarmclock.button.AbstractGlowButton;
+import net.mcl.alarmclock.AppFonts;
+import net.mcl.alarmclock.swing.AbstractGlowButton;
 
 /**
  * Button for selecting (and retrieving) the RSS source.
@@ -18,7 +18,7 @@ class RssChoiceButton extends AbstractGlowButton {
         setText(rssLabel);
         this.rssLabel = rssLabel;
         this.rssSource = rssSource;
-        FONTS.PLAIN_LARGE.applyStyle(this);
+        AppFonts.PLAIN_LARGE.applyStyle(this);
     }
 
     @Override

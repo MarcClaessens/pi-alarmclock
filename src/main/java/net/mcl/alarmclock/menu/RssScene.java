@@ -9,23 +9,24 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.mcl.alarmclock.AppContext;
-import net.mcl.alarmclock.FONTS;
+import net.mcl.alarmclock.AppFonts;
 import net.mcl.alarmclock.feature.RssFeedListener;
 import net.mcl.alarmclock.feature.RssSource;
+import net.mcl.alarmclock.swing.AppJLabel;
+import net.mcl.alarmclock.swing.AppJPanel;
 
 /**
  * Scene for selecting and retrieving RSS content. Note the RSS feed is not
  * automatically refreshed.
  */
-public class RssScene extends BlackPanel implements RssFeedListener {
-    private final JLabel marquee = new JLabel();
+public class RssScene extends AppJPanel implements RssFeedListener {
+    private final JLabel marquee = new AppJLabel(AppFonts.PLAIN_STANDARD);
 
     private final JPanel top;
 
     public RssScene(AppContext context) {
         super(context);
         setName("RssScene");
-        FONTS.PLAIN_STANDARD.applyStyle(marquee);
 
         top = getTop();
         add(top);
@@ -36,7 +37,7 @@ public class RssScene extends BlackPanel implements RssFeedListener {
     }
 
     private JPanel getTop() {
-        JPanel pane = new BlackPanel(getContext(), new FlowLayout(FlowLayout.CENTER, 10, 0));
+        JPanel pane = new AppJPanel(getContext(), new FlowLayout(FlowLayout.CENTER, 10, 0));
         for (RssSource source : getContext().props().getRssSources()) {
             pane.add(new RssChoiceButton(getContext(), source.getLabel(), source.getSourceUrl()));
         }

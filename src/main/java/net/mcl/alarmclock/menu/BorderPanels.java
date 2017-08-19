@@ -15,20 +15,20 @@ import javax.swing.JPanel;
 
 import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.button.ButtonType;
+import net.mcl.alarmclock.swing.AppJPanel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WingPanels {
+public class BorderPanels {
     private static final String INACTIVE = "inactive";
     private static final String ACTIVE = "active";
 
-    private static final Logger LOGGER = LogManager.getLogger(WingPanels.class);
+    private static final Logger LOGGER = LogManager.getLogger(BorderPanels.class);
 
     private final AppContext context;
     private final List<JButton> buttons = new ArrayList<>();
     private final JButton menuButton;
-    private boolean active = false;
 
     private final JComponent left;
     private final JComponent right;
@@ -39,7 +39,7 @@ public class WingPanels {
 
     private final JLabel buttomMessages;
 
-    public WingPanels(AppContext context) {
+    public BorderPanels(AppContext context) {
         this.context = context;
         this.buttomMessages = new WeatherReportLabel(context);
         loadButtons();
@@ -79,12 +79,12 @@ public class WingPanels {
     }
 
     private JComponent buildMenu() {
-        JPanel panelToggleButton = new BlackPanel(context, new FlowLayout());
+        JPanel panelToggleButton = new AppJPanel(context, new FlowLayout());
         panelToggleButton.add(menuButton);
 
-        toggleContainer = new BlackPanel(context, toggleLayout);
+        toggleContainer = new AppJPanel(context, toggleLayout);
 
-        JPanel panelActive = new BlackPanel(context, new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel panelActive = new AppJPanel(context, new FlowLayout(FlowLayout.CENTER, 5, 10));
         for (ButtonType t : ButtonType.values()) {
             if (t.isAllowedInButtonMenu()) {
                 JButton b = t.getButton(context);
@@ -94,13 +94,13 @@ public class WingPanels {
 
         toggleContainer.add(panelActive, ACTIVE);
 
-        JPanel panelInactive = new BlackPanel(context, new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel panelInactive = new AppJPanel(context, new FlowLayout(FlowLayout.CENTER, 10, 10));
         panelInactive.add(buttomMessages);
 
         toggleContainer.add(panelInactive, INACTIVE);
         toggleLayout.show(toggleContainer, INACTIVE);
 
-        JPanel menu = new BlackPanel(context, new FlowLayout(FlowLayout.LEFT, 30, 10));
+        JPanel menu = new AppJPanel(context, new FlowLayout(FlowLayout.LEFT, 10, 5));
         menu.add(panelToggleButton);
         menu.add(toggleContainer);
 
@@ -111,13 +111,15 @@ public class WingPanels {
         return menu;
     }
 
-    public void toggleMenu() {
-        toggleLayout.show(toggleContainer, active ? INACTIVE : ACTIVE);
-        active = !active;
+    public void setMenuActive(boolean active) {
+        toggleLayout.show(toggleContainer, active ? ACTIVE : INACTIVE);
+        if (!active) {
+            context.screen().setClockScene();
+        }
     }
 
     private JComponent getButtonsNode(List<JButton> buttons) {
-        JPanel panel = new BlackPanel(context, new GridBagLayout());
+        JPanel panel = new AppJPanel(context, new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
         c.insets = new Insets(0, 0, 10, 0);

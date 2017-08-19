@@ -1,15 +1,20 @@
 package net.mcl.alarmclock.feature;
 
+import java.awt.Color;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.prefs.Preferences;
 
+import net.mcl.alarmclock.AppProperties;
 import net.mcl.alarmclock.CharIcon;
+import net.mcl.alarmclock.IconProvider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +23,7 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
     private static final Logger LOGGER = LogManager.getLogger(AppPropertiesImpl.class);
 
     private Properties props = null;
+    private Preferences prefs = Preferences.userNodeForPackage(getClass());
 
     public AppPropertiesImpl() {
         props = new Properties();
@@ -129,6 +135,11 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
     }
 
     @Override
+    public CharIcon getColor() {
+        return charprop("icon.colors");
+    }
+
+    @Override
     public List<RssSource> getRssSources() {
         List<RssSource> rss = new ArrayList<>();
         int count = Integer.parseInt(props.getProperty("rss.count", "0"));
@@ -147,5 +158,53 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
     @Override
     public String getCustomFontSizes() {
         return props.getProperty("font.size");
+    }
+
+    @Override
+    public void setAlarmTime(LocalTime time) {
+        prefs.putInt("alarm.hour", time.getHour());
+        prefs.putInt("alarm.minutes", time.getMinute());
+    }
+
+    @Override
+    public LocalTime getAlarmTime() {
+        int h = prefs.getInt("alarm.hour", 8);
+        int m = prefs.getInt("alarm.minutes", 0);
+        return LocalTime.of(h, m);
+    }
+
+    @Override
+    public void setForeGroundColor(Color color) {
+        saveColor("color.front", color);
+    }
+
+    @Override
+    public Color getForeGroundColor() {
+        return getColor("color.front", Color.RED);
+    }
+
+    @Override
+    public void setBackGroundColor(Color color) {
+        saveColor("color.back", color);
+    }
+
+    @Override
+    public Color getBackGroundColor() {
+        return getColor("color.back", Color.BLACK);
+    }
+
+    private void saveColor(String key, Color c) {
+        prefs.putInt(key + ".red", c.getRed());
+        prefs.putInt(key + ".green", c.getGreen());
+        prefs.putInt(key + ".blue", c.getBlue());
+        prefs.putInt(key + ".alfa", c.getAlpha());
+    }
+
+    private Color getColor(String key, Color defaultColor) {
+        int r = prefs.getInt(key + ".red", defaultColor.getRed());
+        int g = prefs.getInt(key + ".green", defaultColor.getGreen());
+        int b = prefs.getInt(key + ".blue", defaultColor.getBlue());
+        int a = prefs.getInt(key + ".alfa", defaultColor.getAlpha());
+        return new Color(r, g, b, a);
     }
 }

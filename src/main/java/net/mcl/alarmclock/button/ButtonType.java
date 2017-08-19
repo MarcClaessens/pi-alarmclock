@@ -1,6 +1,7 @@
 package net.mcl.alarmclock.button;
 
 import net.mcl.alarmclock.AppContext;
+import net.mcl.alarmclock.swing.AbstractIconGlowButton;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -14,6 +15,7 @@ public enum ButtonType {
     CLOCKMENU(false, true, c -> new ClockMenuButton(c)),
     ALARMTIMEMENU(true, true, c -> new AlarmtimeMenuButton(c)),
     RSSMENU(true, true, c -> new RssMenuButton(c)),
+    COLORMENU(true, true, c -> new ColorMenuButton(c)),
     ALARM(true, false, c -> new AlarmButton(c)),
     WEATHER(true, true, c -> new WeatherButton(c)),
     MUSIC(true, true, c -> new MusicButton(c)),

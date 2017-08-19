@@ -5,7 +5,6 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
@@ -17,10 +16,11 @@ import javax.swing.JPanel;
 
 import net.mcl.alarmclock.feature.MainContext;
 import net.mcl.alarmclock.menu.AlarmTimeScene;
-import net.mcl.alarmclock.menu.BlackPanel;
+import net.mcl.alarmclock.menu.BorderPanels;
 import net.mcl.alarmclock.menu.ClockScene;
+import net.mcl.alarmclock.menu.ColorScene;
 import net.mcl.alarmclock.menu.RssScene;
-import net.mcl.alarmclock.menu.WingPanels;
+import net.mcl.alarmclock.swing.AppJPanel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,17 +31,17 @@ import org.apache.logging.log4j.Logger;
 public class Main extends JFrame implements AppScreen {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-    private final WingPanels sideWings;
+    private final BorderPanels borderPanels;
     private final JPanel root;
-    private final JPanel topPanel;
     private final JPanel centerPanel;
     private final JPanel bottomPanel;
     private final JPanel leftPanel;
     private final JPanel rightPanel;
 
-    private final JPanel clockscene;
-    private final JPanel rssscene;
-    private final JPanel alarmtimescene;
+    private final ClockScene clockscene;
+    private final RssScene rssscene;
+    private final AlarmTimeScene alarmtimescene;
+    private final ColorScene colorscene;
 
     private final AppContext context;
 
@@ -49,9 +49,8 @@ public class Main extends JFrame implements AppScreen {
 
     public static void main(String[] args) throws Exception {
         try {
-
+            // SliderSnap.init();
             Main app = new Main();
-
         } catch (Exception e) {
             LOGGER.error(e);
             throw e;
@@ -64,7 +63,6 @@ public class Main extends JFrame implements AppScreen {
     public Main() throws Exception {
         try {
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            getContentPane().setBackground(Color.black);
             getRootPane().setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 
             loadFonts("/fonts/digital-7-(mono).ttf", "/fonts/fontawesome-webfont.ttf",
@@ -72,22 +70,24 @@ public class Main extends JFrame implements AppScreen {
 
             context = new MainContext(this);
             setCustomFontSizes();
+            setCustomColors();
+            getContentPane().setBackground(AppColor.BACKGROUND.getColor());
 
-            sideWings = new WingPanels(context);
-            root = new BlackPanel(context, new BorderLayout());
-            leftPanel = new BlackPanel(context, new GridBagLayout());
-            rightPanel = new BlackPanel(context, new GridBagLayout());
-            topPanel = new BlackPanel(context, new FlowLayout(FlowLayout.LEFT));
-            centerPanel = new BlackPanel(context, new CardLayout());
-            bottomPanel = new BlackPanel(context, new GridBagLayout());
+            borderPanels = new BorderPanels(context);
+            root = new AppJPanel(context, new BorderLayout());
+            leftPanel = new AppJPanel(context, new GridBagLayout());
+            rightPanel = new AppJPanel(context, new GridBagLayout());
+            centerPanel = new AppJPanel(context, new CardLayout());
+            bottomPanel = new AppJPanel(context, new GridBagLayout());
 
             createLayoutPanels();
 
             alarmtimescene = new AlarmTimeScene(context);
             clockscene = new ClockScene(context);
             rssscene = new RssScene(context);
+            colorscene = new ColorScene(context);
 
-            registerScenes(alarmtimescene, clockscene, rssscene);
+            registerScenes(alarmtimescene, clockscene, rssscene, colorscene);
 
             setClockScene();
 
@@ -109,6 +109,11 @@ public class Main extends JFrame implements AppScreen {
         }
     }
 
+    private void setCustomColors() {
+        AppColor.FOREGROUND.changeDefaultColor(context.props().getForeGroundColor());
+        AppColor.BACKGROUND.changeDefaultColor(context.props().getBackGroundColor());
+    }
+
     private void setCustomFontSizes() throws ParseException {
         String sizes = context.props().getCustomFontSizes();
         if (sizes != null) {
@@ -116,7 +121,7 @@ public class Main extends JFrame implements AppScreen {
             MessageFormat format = new MessageFormat("{0}({1})");
             for (String source : fontsizes) {
                 Object[] parsedResult = format.parse(source);
-                FONTS.valueOf((String) parsedResult[0]).alterDefaultSize(Integer.parseInt((String) parsedResult[1]));
+                AppFonts.valueOf((String) parsedResult[0]).alterDefaultSize(Integer.parseInt((String) parsedResult[1]));
             }
         }
     }
@@ -134,13 +139,12 @@ public class Main extends JFrame implements AppScreen {
         getContentPane().add(root);
         root.add(centerPanel, BorderLayout.CENTER);
 
-        leftPanel.add(sideWings.getLeft());
-        rightPanel.add(sideWings.getRight());
-        bottomPanel.add(sideWings.getMenu());
+        leftPanel.add(borderPanels.getLeft());
+        rightPanel.add(borderPanels.getRight());
+        bottomPanel.add(borderPanels.getMenu());
 
         root.add(leftPanel, BorderLayout.WEST);
         root.add(rightPanel, BorderLayout.EAST);
-        root.add(topPanel, BorderLayout.NORTH);
         root.add(bottomPanel, BorderLayout.SOUTH);
     }
 
@@ -175,6 +179,14 @@ public class Main extends JFrame implements AppScreen {
     }
 
     /**
+     * Change main scene to ColorPicker.
+     */
+    @Override
+    public void setColorScene() {
+        setScene(colorscene);
+    }
+
+    /**
      * Switch scene. If current scene was the AlarmTime, then save the
      * configured alarm time (as we don't want to save to file on every click).
      * 
@@ -193,8 +205,13 @@ public class Main extends JFrame implements AppScreen {
     }
 
     @Override
-    public void toggleMenuPanel() {
-        sideWings.toggleMenu();
+    public void setMenuPanel(boolean active) {
+        borderPanels.setMenuActive(active);
     }
 
+    @Override
+    public void setForeGroundColor(Color color) {
+        context.props().setForeGroundColor(color);
+        setCustomColors();
+    }
 }

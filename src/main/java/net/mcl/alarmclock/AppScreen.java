@@ -1,5 +1,7 @@
 package net.mcl.alarmclock;
 
+import java.awt.Color;
+
 public interface AppScreen {
 
     void setAlarmTimeScene();
@@ -8,5 +10,9 @@ public interface AppScreen {
 
     void setRssScene();
 
-    void toggleMenuPanel();
+    void setColorScene();
+
+    void setMenuPanel(boolean active);
+
+    void setForeGroundColor(Color color);
 }

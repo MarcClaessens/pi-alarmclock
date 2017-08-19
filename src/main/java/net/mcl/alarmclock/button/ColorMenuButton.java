@@ -5,17 +5,13 @@ import java.awt.event.ActionEvent;
 import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.swing.AbstractIconGlowButton;
 
-/**
- * Button to go to the RSS menu.
- */
-class RssMenuButton extends AbstractIconGlowButton {
-
-    public RssMenuButton(AppContext context) {
-        super(context, context.icons().getRss());
+public class ColorMenuButton extends AbstractIconGlowButton {
+    public ColorMenuButton(AppContext context) {
+        super(context, context.icons().getColor());
     }
 
     @Override
     protected void clicked(ActionEvent event) {
-        getContext().screen().setRssScene();
+        getContext().screen().setColorScene();
     }
 }

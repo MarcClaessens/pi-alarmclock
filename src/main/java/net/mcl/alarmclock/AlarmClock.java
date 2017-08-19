@@ -1,6 +1,9 @@
-package net.mcl.alarmclock.feature;
+package net.mcl.alarmclock;
 
 import java.time.LocalTime;
+
+import net.mcl.alarmclock.feature.AlarmTimeListener;
+import net.mcl.alarmclock.feature.CurrentTimeListener;
 
 public interface AlarmClock {
     void setAlarmOn(boolean alarmOn);
@@ -14,14 +17,6 @@ public interface AlarmClock {
     void registerAlarmListener(AlarmTimeListener l);
 
     LocalTime getAlarmTime();
-
-    void minusAlarmTimeMinutes(int min);
-
-    void plusAlarmTimeMinutes(int min);
-
-    void plusAlarmTimeHours(int hours);
-
-    void minusAlarmTimeHours(int hours);
 
     void setAlarmTime(LocalTime lt);
 

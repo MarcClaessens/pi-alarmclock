@@ -2,9 +2,10 @@ package net.mcl.alarmclock.menu;
 
 import java.awt.event.ActionEvent;
 
+import net.mcl.alarmclock.AlarmClock;
 import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CharIcon;
-import net.mcl.alarmclock.button.AbstractIconGlowButton;
+import net.mcl.alarmclock.swing.AbstractIconGlowButton;
 
 /**
  * Button to adjust the alarm time setting.
@@ -39,17 +40,18 @@ class TimeAdjustButton extends AbstractIconGlowButton {
 
     @Override
     protected void clicked(ActionEvent event) {
+        AlarmClock alarm = getContext().alarmClock();
         if (hours) {
             if (up) {
-                getContext().alarmClock().plusAlarmTimeHours(diff);
+                alarm.setAlarmTime(alarm.getAlarmTime().plusHours(diff));
             } else {
-                getContext().alarmClock().minusAlarmTimeHours(diff);
+                alarm.setAlarmTime(alarm.getAlarmTime().minusHours(diff));
             }
         } else {
             if (up) {
-                getContext().alarmClock().plusAlarmTimeMinutes(diff);
+                alarm.setAlarmTime(alarm.getAlarmTime().plusMinutes(diff));
             } else {
-                getContext().alarmClock().minusAlarmTimeMinutes(diff);
+                alarm.setAlarmTime(alarm.getAlarmTime().minusMinutes(diff));
             }
         }
     }

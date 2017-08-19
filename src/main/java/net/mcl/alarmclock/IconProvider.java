@@ -1,6 +1,4 @@
-package net.mcl.alarmclock.feature;
-
-import net.mcl.alarmclock.CharIcon;
+package net.mcl.alarmclock;
 
 public interface IconProvider {
     CharIcon getAlarm();
@@ -22,4 +20,6 @@ public interface IconProvider {
     CharIcon getRss();
 
     CharIcon getExit();
+
+    CharIcon getColor();
 }

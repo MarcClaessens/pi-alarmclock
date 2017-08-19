@@ -8,7 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.mcl.alarmclock.AppContext;
-import net.mcl.alarmclock.FONTS;
+import net.mcl.alarmclock.AppFonts;
+import net.mcl.alarmclock.swing.AppJLabel;
+import net.mcl.alarmclock.swing.AppJPanel;
 
 /**
  * Scene to set the alarm time.
@@ -22,7 +24,7 @@ import net.mcl.alarmclock.FONTS;
  * The time is saved when this scene is exited (see Main). Note that the up/down
  * buttons are likely to become misaligned when changing the font.
  */
-public class AlarmTimeScene extends BlackPanel {
+public class AlarmTimeScene extends AppJPanel {
     private final ClockTimeLabel clock;
 
     public AlarmTimeScene(AppContext context) {
@@ -40,7 +42,7 @@ public class AlarmTimeScene extends BlackPanel {
         final TimeAdjustButton mins10down = new TimeAdjustButton(getContext(), false, false, 10);
         final TimeAdjustButton mins1down = new TimeAdjustButton(getContext(), false, false, 1);
 
-        final JPanel panel1 = new BlackPanel(getContext());
+        final JPanel panel1 = new AppJPanel(getContext());
         panel1.add(blank(1));
         panel1.add(hoursup);
         panel1.add(blank(7));
@@ -48,7 +50,7 @@ public class AlarmTimeScene extends BlackPanel {
         panel1.add(blank(1));
         panel1.add(mins1up);
 
-        final JPanel panel2 = new BlackPanel(getContext());
+        final JPanel panel2 = new AppJPanel(getContext());
         panel2.add(blank(1));
         panel2.add(hoursdown);
         panel2.add(blank(7));
@@ -56,20 +58,19 @@ public class AlarmTimeScene extends BlackPanel {
         panel2.add(blank(1));
         panel2.add(mins1down);
 
-        final JPanel panel = new BlackPanel(getContext(), new BorderLayout());
+        final JPanel panel = new AppJPanel(getContext(), new BorderLayout());
         panel.add(panel1, BorderLayout.NORTH);
         panel.add(clock, BorderLayout.CENTER);
         panel.add(panel2, BorderLayout.SOUTH);
 
         // create new panel to keep the above components to getter and centered
-        final JPanel grouppanel = new BlackPanel(getContext(), new GridBagLayout());
+        final JPanel grouppanel = new AppJPanel(getContext(), new GridBagLayout());
         grouppanel.add(panel);
         return grouppanel;
     }
 
     private JComponent blank(int blanks) {
-        JLabel label = new JLabel();
-        FONTS.INVISIBLE_SPACING.applyStyle(label);
+        JLabel label = new AppJLabel(AppFonts.INVISIBLE_SPACING);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < blanks; i++) {
             sb.append('A');

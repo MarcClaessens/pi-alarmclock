@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.mcl.alarmclock.AppContext;
+import net.mcl.alarmclock.swing.AbstractIconGlowButton;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

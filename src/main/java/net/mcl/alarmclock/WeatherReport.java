@@ -1,4 +1,6 @@
-package net.mcl.alarmclock.feature;
+package net.mcl.alarmclock;
+
+import net.mcl.alarmclock.feature.WeatherReportListener;
 
 public interface WeatherReport {
     void setWeatherReportOn(boolean messageOn);

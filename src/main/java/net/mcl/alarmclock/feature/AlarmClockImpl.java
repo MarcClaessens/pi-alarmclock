@@ -7,10 +7,11 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.prefs.Preferences;
 
 import javax.swing.Timer;
 
+import net.mcl.alarmclock.AlarmClock;
+import net.mcl.alarmclock.AppProperties;
 import net.mcl.alarmclock.sound.FileSound;
 import net.mcl.alarmclock.sound.Sound;
 import net.mcl.alarmclock.sound.WebMp3Sound;
@@ -34,24 +35,25 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
     private final String secondAlarm;
 
     private final AlarmThread alarmthread;
+    private final AppProperties appProps;
     private final int louddelay;
     private final Timer timerPrimary;
     private final Timer timerSecundary;
 
-    public AlarmClockImpl(AlarmThread alarmthread, AppProperties appprops) {
+    public AlarmClockImpl(AlarmThread alarmthread, AppProperties appProps) {
         timerPrimary = new Timer(500, this);
         timerPrimary.setActionCommand(PRIMARY);
         timerPrimary.start();
 
         this.alarmthread = alarmthread;
-        this.radioInput = appprops.getRadioAlarm();
-        this.secondAlarm = appprops.getLoudAlarm();
-        this.louddelay = appprops.getLoudAlarmActivationDelay();
+        this.appProps = appProps;
+        this.radioInput = appProps.getRadioAlarm();
+        this.secondAlarm = appProps.getLoudAlarm();
+        this.louddelay = appProps.getLoudAlarmActivationDelay();
 
-        int repeatdelay = appprops.getLoudAlarmRepeatDelay() * 1000;
+        int repeatdelay = appProps.getLoudAlarmRepeatDelay() * 1000;
         timerSecundary = new Timer(repeatdelay, this);
         timerSecundary.setActionCommand(SECUNDARY);
-
     }
 
     /**
@@ -197,42 +199,17 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
     }
 
     @Override
-    public void plusAlarmTimeHours(int hours) {
-        setAlarmTime(alarmTime.plusHours(hours));
-    }
-
-    @Override
-    public void minusAlarmTimeHours(int hours) {
-        setAlarmTime(alarmTime.minusHours(hours));
-    }
-
-    @Override
-    public void plusAlarmTimeMinutes(int min) {
-        setAlarmTime(alarmTime.plusMinutes(min));
-    }
-
-    @Override
-    public void minusAlarmTimeMinutes(int min) {
-        setAlarmTime(alarmTime.minusMinutes(min));
-    }
-
-    @Override
     public LocalTime getAlarmTime() {
         return alarmTime;
     }
 
     @Override
     public void saveAlarmTime() {
-        Preferences prefs = Preferences.userRoot().node(getClass().getName());
-        prefs.putInt("alarm.hour", alarmTime.getHour());
-        prefs.putInt("alarm.minutes", alarmTime.getMinute());
+        appProps.setAlarmTime(alarmTime);
     }
 
     @Override
     public void loadAlarmTime() {
-        Preferences prefs = Preferences.userRoot().node(getClass().getName());
-        int h = prefs.getInt("alarm.hour", 8);
-        int m = prefs.getInt("alarm.minutes", 0);
-        setAlarmTime(LocalTime.of(h, m));
+        setAlarmTime(appProps.getAlarmTime());
     }
 }

@@ -6,8 +6,13 @@ import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+import net.mcl.alarmclock.AlarmClock;
 import net.mcl.alarmclock.AppContext;
+import net.mcl.alarmclock.AppProperties;
 import net.mcl.alarmclock.AppScreen;
+import net.mcl.alarmclock.IconProvider;
+import net.mcl.alarmclock.RssFeed;
+import net.mcl.alarmclock.WeatherReport;
 
 public class MainContext implements AppContext {
     private static AlarmThread ALARM_THREAD = new AlarmThread();

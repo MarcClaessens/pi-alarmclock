@@ -3,6 +3,7 @@ package net.mcl.alarmclock.button;
 import java.awt.event.ActionEvent;
 
 import net.mcl.alarmclock.AppContext;
+import net.mcl.alarmclock.swing.AbstractIconGlowButton;
 
 /**
  * Button to go the clock scene.

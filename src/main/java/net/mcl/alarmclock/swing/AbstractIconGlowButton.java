@@ -1,4 +1,4 @@
-package net.mcl.alarmclock.button;
+package net.mcl.alarmclock.swing;
 
 import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.CharIcon;

@@ -20,6 +20,8 @@ import net.mcl.alarmclock.swing.AppJPanel;
 import net.mcl.alarmclock.swing.AppJSlider;
 
 public class ColorScene extends AppJPanel implements ChangeListener {
+    private static final long serialVersionUID = 1L;
+
     private static String[] labels = { "Red", "Green", "Blue", "Alpha" };
 
     private final JSlider[] sliders = new JSlider[4];

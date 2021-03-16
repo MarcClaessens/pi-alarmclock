@@ -6,25 +6,25 @@ import net.mcl.alarmclock.feature.AlarmTimeListener;
 import net.mcl.alarmclock.feature.CurrentTimeListener;
 
 public interface AlarmClock {
-    void setAlarmOn(boolean alarmOn);
+	void setAlarmOn(boolean alarmOn);
 
-    void toggleAlarm();
+	void toggleAlarm();
 
-    boolean isAlarmOn();
+	boolean isAlarmOn();
 
-    void registerTimeListener(CurrentTimeListener l);
+	void registerTimeListener(CurrentTimeListener l);
 
-    void registerAlarmListener(AlarmTimeListener l);
+	void registerAlarmListener(AlarmTimeListener l);
 
-    LocalTime getAlarmTime();
+	LocalTime getAlarmTime();
 
-    void setAlarmTime(LocalTime lt);
+	void setAlarmTime(LocalTime lt);
 
-    void saveAlarmTime();
+	void saveAlarmTime();
 
-    void loadAlarmTime();
+	void toggleMusic();
 
-    void toggleMusic();
+	boolean isMusicPlaying();
 
-    boolean isMusicPlaying();
+	void changeRadioChannel(String radioChannel);
 }

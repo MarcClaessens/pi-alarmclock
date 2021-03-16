@@ -4,48 +4,63 @@ import java.awt.Color;
 import java.time.LocalTime;
 import java.util.List;
 
+import net.mcl.alarmclock.feature.RadioChannelSource;
 import net.mcl.alarmclock.feature.RssSource;
 
 public interface AppProperties {
-    String getLoudAlarm();
+	String getLoudAlarm();
 
-    String getRadioAlarm();
+	String getRadioAlarm();
 
-    int getLoudAlarmRepeatDelay();
+	int getLoudAlarmRepeatDelay();
 
-    int getLoudAlarmActivationDelay();
+	int getLoudAlarmActivationDelay();
 
-    int getButtonCount();
+	boolean getFullScreen();
 
-    int getButtonLeftCount();
+	int getButtonCount();
 
-    String getButtonType(int buttonNr);
+	int getButtonLeftCount();
 
-    String getWeatherSource();
+	String getButtonType(int buttonNr);
 
-    List<RssSource> getRssSources();
+	String getWeatherSource();
 
-    int getRssFetchCount();
+	List<RssSource> getRssSources();
 
-    String getCustomFontSizes();
+	int getRssFetchCount();
 
-    /**
-     * Sets the alarm time in HH:MM
-     */
-    void setAlarmTime(LocalTime time);
+	String getCustomFontSizes();
 
-    /**
-     * Gets the alarm time in HH:MM (array element 0 is hours, array element 1
-     * is
-     */
-    LocalTime getAlarmTime();
+	/**
+	 * Sets the alarm time in HH:MM
+	 */
+	void setAlarmTime(LocalTime time);
 
-    void setForeGroundColor(Color color);
+	/**
+	 * Gets the alarm time in HH:MM (array element 0 is hours, array element 1 is
+	 */
+	LocalTime getAlarmTime();
 
-    Color getForeGroundColor();
+	void setForeGroundColor(Color color);
 
-    void setBackGroundColor(Color color);
+	Color getForeGroundColor();
 
-    Color getBackGroundColor();
+	void setBackGroundColor(Color color);
 
+	Color getBackGroundColor();
+
+	int getSliderLength();
+
+	int getSliderHeight();
+
+	int getSliderIconLength();
+
+	int getSliderIconHeight();
+
+	List<RadioChannelSource> getRadioChannels();
+
+	void setRadioAlarm(String newUrl);
+
+	String getMixer();
 }

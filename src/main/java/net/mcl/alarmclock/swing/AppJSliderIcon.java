@@ -8,8 +8,13 @@ import java.awt.SystemColor;
 import javax.swing.Icon;
 
 class AppJSliderIcon implements Icon {
-    private int width = 16;
-    private int height = 36;
+    private final int width;
+    private final int height;
+
+    public AppJSliderIcon(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {

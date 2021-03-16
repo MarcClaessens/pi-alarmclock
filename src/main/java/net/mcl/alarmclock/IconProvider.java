@@ -1,25 +1,27 @@
 package net.mcl.alarmclock;
 
 public interface IconProvider {
-    CharIcon getAlarm();
+	CharIcon getAlarm();
 
-    CharIcon getClock();
+	CharIcon getClock();
 
-    CharIcon getHome();
+	CharIcon getHome();
 
-    CharIcon getMenu();
+	CharIcon getMenu();
 
-    CharIcon getWeather();
+	CharIcon getWeather();
 
-    CharIcon getPower();
+	CharIcon getPower();
 
-    CharIcon getArrow();
+	CharIcon getArrow();
 
-    CharIcon getMusic();
+	CharIcon getMusic();
 
-    CharIcon getRss();
+	CharIcon getRss();
 
-    CharIcon getExit();
+	CharIcon getExit();
 
-    CharIcon getColor();
+	CharIcon getColor();
+
+	CharIcon getRadioChannel();
 }

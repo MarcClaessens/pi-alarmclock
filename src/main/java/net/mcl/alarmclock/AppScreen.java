@@ -4,15 +4,18 @@ import java.awt.Color;
 
 public interface AppScreen {
 
-    void setAlarmTimeScene();
+	void setAlarmTimeScene();
 
-    void setClockScene();
+	void setClockScene();
 
-    void setRssScene();
+	void setRssScene();
 
-    void setColorScene();
+	void setRadioChannelScene();
 
-    void setMenuPanel(boolean active);
+	void setColorScene();
 
-    void setForeGroundColor(Color color);
+	void setMenuPanel(boolean active);
+
+	void setForeGroundColor(Color color);
+
 }

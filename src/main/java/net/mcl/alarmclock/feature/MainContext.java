@@ -15,64 +15,65 @@ import net.mcl.alarmclock.RssFeed;
 import net.mcl.alarmclock.WeatherReport;
 
 public class MainContext implements AppContext {
-    private static AlarmThread ALARM_THREAD = new AlarmThread();
 
-    private final AppProperties appProperties = new AppPropertiesImpl();
-    private final IconProvider iconProvider = (AppPropertiesImpl) appProperties;
-    private final AlarmClock alarmclock = new AlarmClockImpl(ALARM_THREAD, appProperties);
-    private final WeatherReport weatherReport = new WeatherReportImpl(appProperties.getWeatherSource());
-    private final AppScreen screen;
-    private final RssFeed rss = new RssFeedImpl(appProperties.getRssFetchCount());
+	private final AppProperties appProperties = new AppPropertiesImpl();
+	private final IconProvider iconProvider = (AppPropertiesImpl) appProperties;
+	private final WeatherReport weatherReport = new WeatherReportImpl(appProperties.getWeatherSource());
+	private final RssFeed rss = new RssFeedImpl(appProperties.getRssFetchCount());
 
-    private int rightClicks;
+	private final AlarmThread alarmThread = new AlarmThread(appProperties.getMixer());
+	private final AlarmClock alarmclock = new AlarmClockImpl(alarmThread, appProperties);
 
-    public MainContext(AppScreen screen) {
-        this.screen = screen;
-        alarmclock.loadAlarmTime();
-    }
+	private final AppScreen screen;
 
-    @Override
-    public AlarmClock alarmClock() {
-        return alarmclock;
-    }
+	private int rightClicks;
 
-    @Override
-    public AppProperties props() {
-        return appProperties;
-    }
+	public MainContext(AppScreen screen) {
+		this.screen = screen;
+	}
 
-    @Override
-    public WeatherReport weather() {
-        return weatherReport;
-    }
+	@Override
+	public AlarmClock alarmClock() {
+		return alarmclock;
+	}
 
-    @Override
-    public AppScreen screen() {
-        return screen;
-    }
+	@Override
+	public AppProperties props() {
+		return appProperties;
+	}
 
-    @Override
-    public IconProvider icons() {
-        return iconProvider;
-    }
+	@Override
+	public WeatherReport weather() {
+		return weatherReport;
+	}
 
-    @Override
-    public RssFeed rss() {
-        return rss;
-    }
+	@Override
+	public AppScreen screen() {
+		return screen;
+	}
 
-    @Override
-    public void registerRightClickListener(JComponent component) {
-        component.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e) || SwingUtilities.isMiddleMouseButton(e)) {
-                    rightClicks++;
-                    if (rightClicks == 4) {
-                        System.exit(0);
-                    }
-                }
-            }
-        });
-    }
+	@Override
+	public IconProvider icons() {
+		return iconProvider;
+	}
+
+	@Override
+	public RssFeed rss() {
+		return rss;
+	}
+
+	@Override
+	public void registerRightClickListener(JComponent component) {
+		component.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e) || SwingUtilities.isMiddleMouseButton(e)) {
+					rightClicks++;
+					if (rightClicks == 4) {
+						System.exit(0);
+					}
+				}
+			}
+		});
+	}
 }

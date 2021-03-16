@@ -17,8 +17,9 @@ public enum ButtonType {
     RSSMENU(true, true, c -> new RssMenuButton(c)),
     COLORMENU(true, true, c -> new ColorMenuButton(c)),
     ALARM(true, false, c -> new AlarmButton(c)),
-    WEATHER(true, true, c -> new WeatherButton(c)),
-    MUSIC(true, true, c -> new MusicButton(c)),
+    WEATHER(true, false, c -> new WeatherButton(c)),
+    MUSIC(true, false, c -> new MusicButton(c)),
+    MUSIC_CHOICE(false, true, c -> new RadioChannelMenuButton(c)),
     POWER(true, true, c -> new PowerButton(c)),
     EXIT(true, true, c -> new ExitButton(c));
 

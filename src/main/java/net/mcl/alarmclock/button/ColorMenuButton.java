@@ -6,12 +6,14 @@ import net.mcl.alarmclock.AppContext;
 import net.mcl.alarmclock.swing.AbstractIconGlowButton;
 
 public class ColorMenuButton extends AbstractIconGlowButton {
-    public ColorMenuButton(AppContext context) {
-        super(context, context.icons().getColor());
-    }
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void clicked(ActionEvent event) {
-        getContext().screen().setColorScene();
-    }
+	public ColorMenuButton(AppContext context) {
+		super(context, context.icons().getColor());
+	}
+
+	@Override
+	protected void clicked(ActionEvent event) {
+		getContext().screen().setColorScene();
+	}
 }

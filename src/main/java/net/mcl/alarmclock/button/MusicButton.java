@@ -5,25 +5,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.mcl.alarmclock.AppContext;
+import net.mcl.alarmclock.feature.SoundSources;
 import net.mcl.alarmclock.swing.AbstractIconGlowButton;
 
 /**
  * Button to toggle playing music.
  */
 class MusicButton extends AbstractIconGlowButton {
-    private static final List<MusicButton> instances = new ArrayList<>();
+	private static final long serialVersionUID = 1L;
+	private static final List<MusicButton> INSTANCES = new ArrayList<>();
+	private static boolean PLAYING = false;
 
-    public MusicButton(AppContext context) {
-        super(context, context.icons().getMusic(), false);
-        instances.add(this);
-    }
+	public MusicButton(AppContext context) {
+		super(context, context.icons().getMusic(), false);
+		INSTANCES.add(this);
+	}
 
-    @Override
-    protected void clicked(ActionEvent event) {
-        getContext().alarmClock().toggleMusic();
-        for (MusicButton b : instances) {
-            b.setIcon(getContext().alarmClock().isMusicPlaying());
-        }
-    }
+	@Override
+	protected void clicked(ActionEvent event) {
+		PLAYING = !PLAYING;
+
+		if (PLAYING) {
+			getContext().alarmClock().playSound(SoundSources.RADIO);
+		} else {
+			getContext().alarmClock().stopSound();
+		}
+		for (MusicButton b : INSTANCES) {
+			b.setIcon(PLAYING);
+		}
+	}
 
 }

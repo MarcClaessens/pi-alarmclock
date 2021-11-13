@@ -2,7 +2,6 @@ package net.mcl.alarmclock.feature;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -15,9 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.mcl.alarmclock.AlarmClock;
 import net.mcl.alarmclock.AppProperties;
-import net.mcl.alarmclock.sound.FileSound;
-import net.mcl.alarmclock.sound.Sound;
-import net.mcl.alarmclock.sound.WebMp3Sound;
+import net.mcl.alarmclock.sound.Mp3Player;
 
 class AlarmClockImpl implements AlarmClock, ActionListener {
 	private static final Logger LOGGER = LogManager.getLogger(AlarmClockImpl.class);
@@ -25,34 +22,28 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 	private static final String SECUNDARY = "SECUNDARY";
 
 	private boolean alarmOn;
-	private boolean alarmRunning;
 	private LocalTime alarmTime;
-	private boolean radioPlaying;
 
 	private final List<CurrentTimeListener> timelisteners = new ArrayList<>();
 	private final List<AlarmTimeListener> alarmlisteners = new ArrayList<>();
-	private String radioInput;
-	private final String secondAlarm;
 
-	private final AlarmThread alarmthread;
 	private final AppProperties appProps;
+	private final Mp3Player player;
 	private final int louddelay;
 	private final Timer timerPrimary;
 	private final Timer timerSecundary;
 
-	public AlarmClockImpl(AlarmThread alarmthread, AppProperties appProps) {
-
+	public AlarmClockImpl(Mp3Player player, AppProperties appProps) {
 		timerPrimary = new Timer(500, this);
 		timerPrimary.setActionCommand(PRIMARY);
 		timerPrimary.start();
 
-		this.alarmthread = alarmthread;
 		this.appProps = appProps;
-		this.radioInput = appProps.getRadioAlarm();
-		this.secondAlarm = appProps.getLoudAlarm();
-		this.louddelay = appProps.getLoudAlarmActivationDelay();
+		this.player = player;
 
+		this.louddelay = appProps.getLoudAlarmActivationDelay();
 		int repeatdelay = appProps.getLoudAlarmRepeatDelay() * 1000;
+
 		timerSecundary = new Timer(repeatdelay, this);
 		timerSecundary.setActionCommand(SECUNDARY);
 
@@ -60,29 +51,11 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 	}
 
 	/**
-	 * Set alarmOn flag.
+	 * Check if alarm is on.
 	 */
 	@Override
-	public void setAlarmOn(boolean alarmOn) {
-		if (!alarmOn) {
-			alarmRunning = false;
-			stop();
-			LOGGER.debug("alarm turned off");
-		}
-		this.alarmOn = alarmOn;
-	}
-
-	/**
-	 * Toggle radio.
-	 */
-	@Override
-	public void toggleMusic() {
-		if (!radioPlaying) {
-			play(radioInput);
-		} else {
-			stop();
-		}
-		radioPlaying = !radioPlaying;
+	public boolean isAlarmOn() {
+		return alarmOn;
 	}
 
 	/**
@@ -94,48 +67,36 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 	}
 
 	/**
-	 * Check if music is playing.
+	 * Set alarmOn flag.
 	 */
 	@Override
-	public boolean isMusicPlaying() {
-		return radioPlaying;
-	}
-
-	/**
-	 * Check if alarm is on.
-	 */
-	@Override
-	public boolean isAlarmOn() {
-		return alarmOn;
-	}
-
-	private void activatePrimaryAlarm() {
-		if (!alarmRunning) {
-			alarmRunning = true;
-			play(radioInput);
+	public void setAlarmOn(boolean alarmOn) {
+		if (!alarmOn) {
+			stopSound();
+			timerSecundary.stop();
+			LOGGER.debug("alarm turned off");
 		}
+		this.alarmOn = alarmOn;
+	}
+
+	@Override
+	public void playSound(SoundSources source) {
+		if (player.isPlaying()) {
+			stopSound();
+		}
+		player.play(source.getSound());
+
+	}
+
+	@Override
+	public void stopSound() {
+		player.stop();
 	}
 
 	private void activateSecundaryAlarm() {
 		if (!timerSecundary.isRunning()) {
 			timerSecundary.start();
 		}
-	}
-
-	private void play(String input) {
-		alarmthread.stopPlaying();
-		LOGGER.debug("Alarm is running for " + input);
-		Sound sound;
-		if (input.startsWith("http")) {
-			sound = new WebMp3Sound(input);
-		} else {
-			sound = new FileSound(new File(input));
-		}
-		alarmthread.playSound(sound);
-	}
-
-	private void stop() {
-		alarmthread.stopPlaying();
 	}
 
 	@Override
@@ -145,11 +106,10 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 
 	@Override
 	public void changeRadioChannel(String radioChannel) {
-		this.radioInput = radioChannel;
+		SoundSources.RADIO.setSource(radioChannel);
 		appProps.setRadioAlarm(radioChannel);
-		if (isMusicPlaying()) {
-			toggleMusic();
-			toggleMusic();
+		if (player.isPlaying()) {
+			playSound(SoundSources.RADIO);
 		}
 	}
 
@@ -166,17 +126,15 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 				timelisteners.parallelStream().forEach(l -> l.updateCurrentTime(t));
 			}
 			if (isAlarmTime(t)) {
-				activatePrimaryAlarm();
+				playSound(SoundSources.RADIO);
 			}
 			if (isSecondAlarmTime(t)) {
 				activateSecundaryAlarm();
 			}
 		}
 		if (SECUNDARY.equals(ae.getActionCommand())) {
-			if (alarmRunning) {
-				play(secondAlarm);
-			} else {
-				timerSecundary.stop();
+			if (alarmOn) { // repeat alarm until toggled off
+				playSound(SoundSources.ALARM);
 			}
 		}
 	}

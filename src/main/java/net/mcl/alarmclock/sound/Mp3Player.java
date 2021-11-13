@@ -14,28 +14,12 @@ import javazoom.jl.player.Player;
 public class Mp3Player {
 	private static final Logger LOGGER = LogManager.getLogger(Mp3Player.class);
 
-	private final AudioDevice audioDevice;
+	private final String mixerName;
 	private Player player = null;
 	private boolean playing = false;
 
 	public Mp3Player(String mixerName) {
-		Mixer foundMixer = null;
-		Mixer.Info[] mixers = AudioSystem.getMixerInfo();
-		for (Mixer.Info mixer : mixers) {
-			if (mixer.getName().equals(mixerName)) {
-				LOGGER.info("<active> Mixer found with name '" + mixer.getName() + "' and description "
-						+ mixer.getDescription());
-				foundMixer = AudioSystem.getMixer(mixer);
-			} else {
-				LOGGER.info("         Mixer found with name '" + mixer.getName() + "' and description "
-						+ mixer.getDescription());
-			}
-		}
-
-		if (foundMixer == null) {
-			LOGGER.info("Using default audio device");
-		}
-		audioDevice = new MixerJavaSoundAudioDevice(foundMixer);
+		this.mixerName = mixerName;
 	}
 
 	/**
@@ -46,7 +30,7 @@ public class Mp3Player {
 	public void play(final Sound sound) {
 		if (sound != null) {
 			try (InputStream is = sound.getSoundStream()) {
-				player = new Player(is, audioDevice);
+				player = new Player(is, getAudioDevice());
 				playing = true;
 				player.play();
 			} catch (Exception e) {
@@ -55,6 +39,27 @@ public class Mp3Player {
 				playing = false;
 			}
 		}
+
+	}
+
+	private AudioDevice getAudioDevice() {
+		Mixer foundMixer = null;
+		Mixer.Info[] mixers = AudioSystem.getMixerInfo();
+		for (Mixer.Info mixer : mixers) {
+			if (mixer.getName().equals(mixerName)) {
+				LOGGER.debug("<active> Mixer found with name '" + mixer.getName() + "' and description "
+						+ mixer.getDescription());
+				foundMixer = AudioSystem.getMixer(mixer);
+			} else {
+				LOGGER.debug("         Mixer found with name '" + mixer.getName() + "' and description "
+						+ mixer.getDescription());
+			}
+		}
+
+		if (foundMixer == null) {
+			LOGGER.debug("Using default audio device");
+		}
+		return new MixerJavaSoundAudioDevice(foundMixer);
 	}
 
 	/**

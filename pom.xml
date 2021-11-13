@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.mcl</groupId>
 	<artifactId>marc-pi</artifactId>
-	<version>2.2.0-SNAPSHOT</version>
+	<version>2.3.0-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -11,12 +11,12 @@
 		<dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.8.2</version>
+            <version>2.14.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.8.2</version>
+            <version>2.14.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javazoom</groupId>
@@ -26,18 +26,13 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20160810</version>
+			<version>20210307</version>
 		</dependency>
 		<dependency>
 			<groupId>com.rometools</groupId>
 			<artifactId>rome</artifactId>
-			<version>1.7.1</version>
+			<version>1.16.0</version>
 		</dependency>
-        <dependency>
-            <artifactId>miglayout-swing</artifactId>
-            <groupId>com.miglayout</groupId>
-            <version>5.0</version>
-        </dependency>
 	</dependencies>
 
 	<build>

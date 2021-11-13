@@ -9,16 +9,17 @@ import net.mcl.alarmclock.swing.AbstractIconGlowButton;
  * Button to go to the main menu.
  */
 class ButtonMenuButton extends AbstractIconGlowButton {
-    private boolean showMenu = false;
+	private static final long serialVersionUID = 1L;
+	private boolean showMenu = false;
 
-    public ButtonMenuButton(AppContext context) {
-        super(context, context.icons().getMenu(), true);
-    }
+	public ButtonMenuButton(AppContext context) {
+		super(context, context.icons().getMenu(), true);
+	}
 
-    @Override
-    protected void clicked(ActionEvent event) {
-        showMenu = !showMenu;
-        getContext().screen().setMenuPanel(showMenu);
-        setIcon(!showMenu);
-    }
+	@Override
+	protected void clicked(ActionEvent event) {
+		showMenu = !showMenu;
+		getContext().screen().setMenuPanel(showMenu);
+		setIcon(!showMenu);
+	}
 }

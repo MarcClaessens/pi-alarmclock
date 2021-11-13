@@ -69,7 +69,7 @@ public class Main extends JFrame implements AppScreen {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			getRootPane().setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 
-			loadFonts("/fonts/digital-7-(mono).ttf", "/fonts/fontawesome-webfont.ttf",
+			loadFonts("/fonts/digital-7-(mono).ttf", "/fonts/fa-solid-900.ttf",
 					"/fonts/materialdesignicons-webfont.ttf");
 
 			context = new MainContext(this);

@@ -8,10 +8,6 @@ import net.mcl.alarmclock.feature.RadioChannelSource;
 import net.mcl.alarmclock.feature.RssSource;
 
 public interface AppProperties {
-	String getLoudAlarm();
-
-	String getRadioAlarm();
-
 	int getLoudAlarmRepeatDelay();
 
 	int getLoudAlarmActivationDelay();
@@ -63,4 +59,7 @@ public interface AppProperties {
 	void setRadioAlarm(String newUrl);
 
 	String getMixer();
+
+	String getRadioAlarm();
+
 }

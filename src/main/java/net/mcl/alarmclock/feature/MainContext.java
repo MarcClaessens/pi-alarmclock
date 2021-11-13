@@ -13,6 +13,8 @@ import net.mcl.alarmclock.AppScreen;
 import net.mcl.alarmclock.IconProvider;
 import net.mcl.alarmclock.RssFeed;
 import net.mcl.alarmclock.WeatherReport;
+import net.mcl.alarmclock.sound.Mp3Player;
+import net.mcl.alarmclock.sound.SwingMp3Player;
 
 public class MainContext implements AppContext {
 
@@ -21,8 +23,8 @@ public class MainContext implements AppContext {
 	private final WeatherReport weatherReport = new WeatherReportImpl(appProperties.getWeatherSource());
 	private final RssFeed rss = new RssFeedImpl(appProperties.getRssFetchCount());
 
-	private final AlarmThread alarmThread = new AlarmThread(appProperties.getMixer());
-	private final AlarmClock alarmclock = new AlarmClockImpl(alarmThread, appProperties);
+	private final Mp3Player player = new SwingMp3Player(appProperties.getMixer());
+	private final AlarmClock alarmclock = new AlarmClockImpl(player, appProperties);
 
 	private final AppScreen screen;
 

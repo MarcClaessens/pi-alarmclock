@@ -17,60 +17,69 @@ import net.mcl.alarmclock.ColorChangeListener;
  * Button with a glowing border. The color is defined in the CSS file.
  */
 public abstract class AbstractGlowButton extends JButton implements ColorChangeListener {
+	private static final long serialVersionUID = 1L;
 
-    private final AppContext context;
+	private final AppContext context;
 
-    protected AbstractGlowButton(AppContext context) {
-        super();
+	protected AbstractGlowButton(AppContext context) {
+		super();
 
-        this.setContentAreaFilled(false);
+		this.setContentAreaFilled(false);
 
-        this.context = context;
-        setAlignmentX(CENTER_ALIGNMENT);
-        setAlignmentY(CENTER_ALIGNMENT);
-        glow(AppColor.FOREGROUND.getColor());
-        setBackground(AppColor.BACKGROUND.getColor());
-        setForeground(AppColor.FOREGROUND.getColor());
-        addActionListener(this::clicked);
-    }
+		this.context = context;
+		setAlignmentX(CENTER_ALIGNMENT);
+		setAlignmentY(CENTER_ALIGNMENT);
+		changeColor(AppColor.FOREGROUND);
+		changeColor(AppColor.BACKGROUND);
+		addActionListener(this::clicked);
 
-    protected abstract void clicked(ActionEvent event);
+		changeColor(AppColor.FOREGROUND);
+		changeColor(AppColor.BACKGROUND);
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+		setFocusPainted(false);
+	}
 
-    protected AppContext getContext() {
-        return context;
-    }
+	protected abstract void clicked(ActionEvent event);
 
-    @Override
-    public void changeForeGround(Color color) {
-        CompoundBorder border1 = BorderFactory.createCompoundBorder(new LineBorder(color.darker().darker(), 3, true),
-                new LineBorder(color.darker(), 2, true));
-        CompoundBorder border2 = BorderFactory.createCompoundBorder(border1, new LineBorder(color, 1, true));
-        setBorder(border2);
-    }
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
 
-    public void glow(Color color) {
-        changeForeGround(color);
-    }
+	protected AppContext getContext() {
+		return context;
+	}
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        if (getModel().isPressed()) {
-            g.setColor(Color.yellow);
-        } else if (getModel().isRollover()) {
-            g.setColor(Color.green);
-        } else {
-            g.setColor(Color.blue);
-        }
-        g.fillRect(0, 0, getWidth(), getHeight());
-        super.paintComponent(g);
-    }
+	@Override
+	public void changeColor(AppColor color) {
+		if (color == AppColor.FOREGROUND) {
+			setForeground(color.getColor());
+			CompoundBorder border1 = BorderFactory.createCompoundBorder(
+					new LineBorder(color.getColor().darker().darker(), 3, true),
+					new LineBorder(color.getColor().darker(), 2, true));
+			CompoundBorder border2 = BorderFactory.createCompoundBorder(border1,
+					new LineBorder(color.getColor(), 1, true));
+			setBorder(border2);
 
-    @Override
-    public void setContentAreaFilled(boolean b) {
-    }
+		} else {
+			setBackground(color.getColor());
+		}
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		if (getModel().isPressed()) {
+			g.setColor(Color.yellow);
+		} else if (getModel().isRollover()) {
+			g.setColor(Color.green);
+		} else {
+			g.setColor(Color.blue);
+		}
+		g.fillRect(0, 0, getWidth(), getHeight());
+		super.paintComponent(g);
+	}
+
+	@Override
+	public void setContentAreaFilled(boolean b) {
+	}
 }

@@ -24,4 +24,6 @@ public interface IconProvider {
 	CharIcon getColor();
 
 	CharIcon getRadioChannel();
+
+	CharIcon getWhiteNoise();
 }

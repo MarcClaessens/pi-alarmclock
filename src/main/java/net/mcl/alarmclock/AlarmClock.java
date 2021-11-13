@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 import net.mcl.alarmclock.feature.AlarmTimeListener;
 import net.mcl.alarmclock.feature.CurrentTimeListener;
+import net.mcl.alarmclock.feature.SoundSources;
 
 public interface AlarmClock {
 	void setAlarmOn(boolean alarmOn);
@@ -22,9 +23,9 @@ public interface AlarmClock {
 
 	void saveAlarmTime();
 
-	void toggleMusic();
+	void playSound(SoundSources source);
 
-	boolean isMusicPlaying();
+	void stopSound();
 
 	void changeRadioChannel(String radioChannel);
 }

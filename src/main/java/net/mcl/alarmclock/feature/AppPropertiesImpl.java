@@ -34,20 +34,27 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 			ioe.printStackTrace();
 			LOGGER.error(ioe);
 		}
+
+		SoundSources.RADIO.setSource(getRadioAlarm());
+		SoundSources.ALARM.setSource(getLoudAlarm());
+		SoundSources.WHITENOICE.setSource(getWhiteNoiseSource());
 	}
 
 	private CharIcon charprop(String key) {
 		return new CharIcon(props.getProperty(key));
 	}
 
-	@Override
-	public String getLoudAlarm() {
+	private String getLoudAlarm() {
 		return props.getProperty("alarm.loud.source");
 	}
 
 	@Override
 	public String getRadioAlarm() {
 		return prefs.get("alarm.radio.source", "http://icecast.vrtcdn.be/radio1-high.mp3");
+	}
+
+	private String getWhiteNoiseSource() {
+		return props.getProperty("whitenoise.source");
 	}
 
 	@Override
@@ -167,6 +174,11 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 	@Override
 	public CharIcon getRadioChannel() {
 		return charprop("icon.radiochannel");
+	}
+
+	@Override
+	public CharIcon getWhiteNoise() {
+		return charprop("icon.whitenoise");
 	}
 
 	@Override

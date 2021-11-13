@@ -12,6 +12,7 @@ import net.mcl.alarmclock.swing.AbstractGlowButton;
  * Button for selecting (and retrieving) the RSS source.
  */
 class RadioChannelChoiceButton extends AbstractGlowButton {
+	private static final long serialVersionUID = 1L;
 	private final String label;
 	private final String url;
 	private final List<RadioChannelChoiceButton> allButtons;

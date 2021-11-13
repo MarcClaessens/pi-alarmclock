@@ -16,6 +16,7 @@ import net.mcl.alarmclock.swing.AppJPanel;
  * automatically refreshed.
  */
 public class RadioChannelScene extends AppJPanel {
+	private static final long serialVersionUID = 1L;
 	private final JPanel panel;
 	private List<RadioChannelChoiceButton> buttons = new ArrayList<>();
 

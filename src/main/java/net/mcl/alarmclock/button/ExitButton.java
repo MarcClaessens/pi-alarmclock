@@ -10,18 +10,19 @@ import net.mcl.alarmclock.swing.AbstractIconGlowButton;
  *
  */
 class ExitButton extends AbstractIconGlowButton {
+	private static final long serialVersionUID = 1L;
 
-    public ExitButton(AppContext context) {
-        super(context, context.icons().getExit());
-    }
+	public ExitButton(AppContext context) {
+		super(context, context.icons().getExit());
+	}
 
-    @Override
-    protected void clicked(ActionEvent event) {
-        try {
-            System.exit(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	@Override
+	protected void clicked(ActionEvent event) {
+		try {
+			System.exit(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

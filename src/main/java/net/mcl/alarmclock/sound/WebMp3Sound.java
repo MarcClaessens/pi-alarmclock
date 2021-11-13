@@ -13,33 +13,38 @@ import org.apache.logging.log4j.Logger;
  * Sound from a web source (can be an MP3 radio stream).
  */
 public class WebMp3Sound implements Sound {
-    private static final Logger LOGGER = LogManager.getLogger(WebMp3Sound.class);
+	private static final Logger LOGGER = LogManager.getLogger(WebMp3Sound.class);
 
-    private final URL url;
+	private final URL url;
 
-    public WebMp3Sound(String url) {
-        this.url = getUrl(url);
-    }
+	public WebMp3Sound(String url) {
+		this.url = getUrl(url);
+	}
 
-    private URL getUrl(String url) {
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            LOGGER.error(e);
-            return null;
-        }
-    }
+	private URL getUrl(String url) {
+		try {
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			LOGGER.error(e);
+			return null;
+		}
+	}
 
-    @Override
-    public InputStream getSoundStream() {
-        if (url == null) {
-            return null;
-        }
-        try {
-            return new BufferedInputStream(url.openStream());
-        } catch (IOException e) {
-            LOGGER.error(e);
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public InputStream getSoundStream() {
+		if (url == null) {
+			return null;
+		}
+		try {
+			return new BufferedInputStream(url.openStream());
+		} catch (IOException e) {
+			LOGGER.error(e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "WebMp3Sound " + url;
+	}
 }

@@ -15,10 +15,12 @@ import org.apache.logging.log4j.Logger;
 public class WebMp3Sound implements Sound {
 	private static final Logger LOGGER = LogManager.getLogger(WebMp3Sound.class);
 
-	private final URL url;
+	private URL url;
+	private final int delayMillis;
 
-	public WebMp3Sound(String url) {
-		this.url = getUrl(url);
+	public WebMp3Sound(String url, int delayMillis) {
+		alterSource(url);
+		this.delayMillis = delayMillis;
 	}
 
 	private URL getUrl(String url) {
@@ -28,6 +30,11 @@ public class WebMp3Sound implements Sound {
 			LOGGER.error(e);
 			return null;
 		}
+	}
+
+	@Override
+	public int getDelayMillis() {
+		return delayMillis;
 	}
 
 	@Override
@@ -44,7 +51,17 @@ public class WebMp3Sound implements Sound {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof WebMp3Sound && ((WebMp3Sound) obj).url.equals(url);
+	}
+
+	@Override
 	public String toString() {
 		return "WebMp3Sound " + url;
+	}
+
+	@Override
+	public void alterSource(String url) {
+		this.url = getUrl(url);
 	}
 }

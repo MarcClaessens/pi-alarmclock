@@ -35,9 +35,9 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 			LOGGER.error(ioe);
 		}
 
-		SoundSources.RADIO.setSource(getRadioAlarm());
-		SoundSources.ALARM.setSource(getLoudAlarm());
-		SoundSources.WHITENOICE.setSource(getWhiteNoiseSource());
+		SoundSource.RADIO.setSource(getRadioAlarm(), getRadioChannelDelayMillis());
+		SoundSource.ALARM.setSource(getLoudAlarm(), getLoudAlarmDelayMillis());
+		SoundSource.WHITENOICE.setSource(getWhiteNoiseSource(), getWhiteNoiseDelayMillis());
 	}
 
 	private CharIcon charprop(String key) {
@@ -88,9 +88,16 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 		return intprop("button.count.left", "0");
 	}
 
-	@Override
-	public int getLoudAlarmRepeatDelay() {
-		return intprop("alarm.loud.repeatdelayseconds", "10");
+	private int getLoudAlarmDelayMillis() {
+		return intprop("alarm.loud.delayMillis", "5000");
+	}
+
+	private int getRadioChannelDelayMillis() {
+		return intprop("alarm.radiochannels.delaymillis", "250");
+	}
+
+	private int getWhiteNoiseDelayMillis() {
+		return intprop("whitenoise.delaymillis", "-1");
 	}
 
 	@Override

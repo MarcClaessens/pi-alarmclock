@@ -17,6 +17,7 @@ public class Mp3Player {
 	private final String mixerName;
 	private Player player = null;
 	private boolean playing = false;
+	private Sound sound;
 
 	public Mp3Player(String mixerName) {
 		this.mixerName = mixerName;
@@ -28,6 +29,11 @@ public class Mp3Player {
 	 * @param sound - a sound file streamed from internet or local file
 	 */
 	public void play(final Sound sound) {
+		this.sound = sound;
+		play();
+	}
+
+	protected void play() {
 		if (sound != null) {
 			try (InputStream is = sound.getSoundStream()) {
 				player = new Player(is, getAudioDevice());
@@ -39,7 +45,14 @@ public class Mp3Player {
 				playing = false;
 			}
 		}
+	}
 
+	protected Sound getSound() {
+		return sound;
+	}
+
+	protected void setSound(Sound sound) {
+		this.sound = sound;
 	}
 
 	private AudioDevice getAudioDevice() {
@@ -69,10 +82,16 @@ public class Mp3Player {
 		if (player != null) {
 			player.close();
 			player = null;
+			sound = null;
 		}
 	}
 
-	public boolean isPlaying() {
+	public synchronized boolean isPlaying() {
 		return playing;
 	}
+
+	public synchronized boolean isPlaying(Sound sound) {
+		return playing && sound.equals(this.sound);
+	}
+
 }

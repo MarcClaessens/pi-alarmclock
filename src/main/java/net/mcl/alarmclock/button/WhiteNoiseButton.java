@@ -3,7 +3,7 @@ package net.mcl.alarmclock.button;
 import java.awt.event.ActionEvent;
 
 import net.mcl.alarmclock.AppContext;
-import net.mcl.alarmclock.feature.SoundSources;
+import net.mcl.alarmclock.feature.SoundSource;
 import net.mcl.alarmclock.swing.AbstractIconGlowButton;
 
 /**
@@ -22,7 +22,7 @@ class WhiteNoiseButton extends AbstractIconGlowButton {
 		playing = !playing;
 
 		if (playing) {
-			getContext().alarmClock().playSound(SoundSources.WHITENOICE);
+			getContext().alarmClock().playSound(SoundSource.WHITENOICE);
 		} else {
 			getContext().alarmClock().stopSound();
 		}

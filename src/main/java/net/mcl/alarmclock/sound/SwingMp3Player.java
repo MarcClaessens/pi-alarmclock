@@ -13,45 +13,55 @@ import org.apache.logging.log4j.Logger;
 public class SwingMp3Player extends Mp3Player implements Runnable {
 	private static final Logger LOGGER = LogManager.getLogger(SwingMp3Player.class);
 
-	private Sound sound = null;
+	private final Thread runner;
 
 	public SwingMp3Player(String mixerName) {
 		super(mixerName);
-		new Thread(this, "SwingMp3Player").start();
+		runner = new Thread(this, "SwingMp3Player");
+		runner.start();
 	}
 
 	@Override
 	public void run() {
 		while (true) {
+			Sound sound = getSound();
 			if (sound != null) {
 				LOGGER.info("Start playing {}", sound);
-				super.play(sound);
 				try {
-					Thread.sleep(1_000L);
-				} catch (InterruptedException e) {
-					LOGGER.error("Interrupted thread", e);
-					Thread.currentThread().interrupt();
+					super.play();
+					if (getSound() == null || sound.getDelayMillis() == -1) {
+						LOGGER.info("Finished playing {}", sound);
+					} else {
+						sleep(sound.getDelayMillis());
+					}
+				} catch (Exception e) {
+					LOGGER.error("Unexpected end of play", e);
 				}
-				sound = null;
-				LOGGER.info("Finished playing {}", sound);
 			} else {
-				try {
-					Thread.sleep(1_000L);
-				} catch (InterruptedException e) {
-					LOGGER.error("Interrupted thread", e);
-					Thread.currentThread().interrupt();
-				}
+				sleep(250L);
 			}
+		}
+	}
+
+	private void sleep(long time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			LOGGER.trace("Interrupted thread", e);
 		}
 	}
 
 	@Override
 	public void play(final Sound sound) {
-		this.sound = sound;
+		super.setSound(sound);
 	}
 
+	@Override
 	public void stop() {
-		sound = null;
+		runner.interrupt();
 		super.stop();
+		while (super.isPlaying()) {
+			sleep(250L);
+		}
 	}
 }

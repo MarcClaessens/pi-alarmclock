@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.mcl.alarmclock.AppContext;
-import net.mcl.alarmclock.feature.SoundSources;
+import net.mcl.alarmclock.feature.SoundSource;
 import net.mcl.alarmclock.swing.AbstractIconGlowButton;
 
 /**
@@ -26,7 +26,7 @@ class MusicButton extends AbstractIconGlowButton {
 		PLAYING = !PLAYING;
 
 		if (PLAYING) {
-			getContext().alarmClock().playSound(SoundSources.RADIO);
+			getContext().alarmClock().playSound(SoundSource.RADIO);
 		} else {
 			getContext().alarmClock().stopSound();
 		}

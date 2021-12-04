@@ -4,7 +4,7 @@ import java.time.LocalTime;
 
 import net.mcl.alarmclock.feature.AlarmTimeListener;
 import net.mcl.alarmclock.feature.CurrentTimeListener;
-import net.mcl.alarmclock.feature.SoundSources;
+import net.mcl.alarmclock.feature.SoundSource;
 
 public interface AlarmClock {
 	void setAlarmOn(boolean alarmOn);
@@ -23,7 +23,7 @@ public interface AlarmClock {
 
 	void saveAlarmTime();
 
-	void playSound(SoundSources source);
+	void playSound(SoundSource source);
 
 	void stopSound();
 

@@ -18,8 +18,7 @@ import net.mcl.alarmclock.sound.Mp3Player;
 
 class AlarmClockImpl implements AlarmClock, ActionListener {
 	private static final Logger LOGGER = LogManager.getLogger(AlarmClockImpl.class);
-	private static final String PRIMARY = "PRIMARY";
-	private static final String SECUNDARY = "SECUNDARY";
+	private static final String FIRST_ALARM = "FIRST_ALARM";
 
 	private boolean alarmOn;
 	private LocalTime alarmTime;
@@ -30,22 +29,17 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 	private final AppProperties appProps;
 	private final Mp3Player player;
 	private final int louddelay;
-	private final Timer timerPrimary;
-	private final Timer timerSecundary;
+	private final Timer timerFirstAlarm;
 
 	public AlarmClockImpl(Mp3Player player, AppProperties appProps) {
-		timerPrimary = new Timer(500, this);
-		timerPrimary.setActionCommand(PRIMARY);
-		timerPrimary.start();
+		timerFirstAlarm = new Timer(500, this);
+		timerFirstAlarm.setActionCommand(FIRST_ALARM);
+		timerFirstAlarm.start();
 
 		this.appProps = appProps;
 		this.player = player;
 
 		this.louddelay = appProps.getLoudAlarmActivationDelay();
-		int repeatdelay = appProps.getLoudAlarmRepeatDelay() * 1000;
-
-		timerSecundary = new Timer(repeatdelay, this);
-		timerSecundary.setActionCommand(SECUNDARY);
 
 		setAlarmTime(appProps.getAlarmTime());
 	}
@@ -73,14 +67,13 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 	public void setAlarmOn(boolean alarmOn) {
 		if (!alarmOn) {
 			stopSound();
-			timerSecundary.stop();
 			LOGGER.debug("alarm turned off");
 		}
 		this.alarmOn = alarmOn;
 	}
 
 	@Override
-	public void playSound(SoundSources source) {
+	public void playSound(SoundSource source) {
 		if (player.isPlaying()) {
 			stopSound();
 		}
@@ -93,12 +86,6 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 		player.stop();
 	}
 
-	private void activateSecundaryAlarm() {
-		if (!timerSecundary.isRunning()) {
-			timerSecundary.start();
-		}
-	}
-
 	@Override
 	public void registerTimeListener(CurrentTimeListener l) {
 		timelisteners.add(l);
@@ -106,10 +93,10 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 
 	@Override
 	public void changeRadioChannel(String radioChannel) {
-		SoundSources.RADIO.setSource(radioChannel);
+		SoundSource.RADIO.getSound().alterSource(radioChannel);
 		appProps.setRadioAlarm(radioChannel);
 		if (player.isPlaying()) {
-			playSound(SoundSources.RADIO);
+			playSound(SoundSource.RADIO);
 		}
 	}
 
@@ -120,21 +107,19 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		if (PRIMARY.equals(ae.getActionCommand())) {
+		if (FIRST_ALARM.equals(ae.getActionCommand()) && alarmOn) {
 			final LocalTime t = LocalTime.now();
 			if (!timelisteners.isEmpty()) {
 				timelisteners.parallelStream().forEach(l -> l.updateCurrentTime(t));
 			}
 			if (isAlarmTime(t)) {
-				playSound(SoundSources.RADIO);
-			}
-			if (isSecondAlarmTime(t)) {
-				activateSecundaryAlarm();
-			}
-		}
-		if (SECUNDARY.equals(ae.getActionCommand())) {
-			if (alarmOn) { // repeat alarm until toggled off
-				playSound(SoundSources.ALARM);
+				if (!player.isPlaying()) {
+					playSound(SoundSource.RADIO);
+				}
+			} else if (isSecondAlarmTime(t)) { // repeat alarm until toggled off
+				if (!player.isPlaying(SoundSource.ALARM.getSound())) {
+					playSound(SoundSource.ALARM);
+				}
 			}
 		}
 	}

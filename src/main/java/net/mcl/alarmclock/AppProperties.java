@@ -8,8 +8,6 @@ import net.mcl.alarmclock.feature.RadioChannelSource;
 import net.mcl.alarmclock.feature.RssSource;
 
 public interface AppProperties {
-	int getLoudAlarmRepeatDelay();
-
 	int getLoudAlarmActivationDelay();
 
 	boolean getFullScreen();

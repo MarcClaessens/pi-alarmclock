@@ -1,21 +1,19 @@
 package net.mcl.alarmclock.feature;
 
-import java.io.File;
-
 import net.mcl.alarmclock.sound.FileSound;
 import net.mcl.alarmclock.sound.Sound;
 import net.mcl.alarmclock.sound.WebMp3Sound;
 
-public enum SoundSources {
+public enum SoundSource {
 	RADIO, ALARM, WHITENOICE;
 
 	private Sound sound;
 
-	public void setSource(String source) {
+	public void setSource(String source, int delayMillis) {
 		if (source.startsWith("http")) {
-			sound = new WebMp3Sound(source);
+			sound = new WebMp3Sound(source, delayMillis);
 		} else {
-			sound = new FileSound(new File(source));
+			sound = new FileSound(source, delayMillis);
 		}
 	}
 

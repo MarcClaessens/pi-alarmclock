@@ -107,18 +107,20 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		if (FIRST_ALARM.equals(ae.getActionCommand()) && alarmOn) {
+		if (FIRST_ALARM.equals(ae.getActionCommand())) {
 			final LocalTime t = LocalTime.now();
 			if (!timelisteners.isEmpty()) {
 				timelisteners.parallelStream().forEach(l -> l.updateCurrentTime(t));
 			}
-			if (isAlarmTime(t)) {
-				if (!player.isPlaying()) {
-					playSound(SoundSource.RADIO);
-				}
-			} else if (isSecondAlarmTime(t)) { // repeat alarm until toggled off
-				if (!player.isPlaying(SoundSource.ALARM.getSound())) {
-					playSound(SoundSource.ALARM);
+			if (alarmOn) {
+				if (isAlarmTime(t)) {
+					if (!player.isPlaying()) {
+						playSound(SoundSource.RADIO);
+					}
+				} else if (isSecondAlarmTime(t)) { // repeat alarm until toggled off
+					if (!player.isPlaying(SoundSource.ALARM.getSound())) {
+						playSound(SoundSource.ALARM);
+					}
 				}
 			}
 		}

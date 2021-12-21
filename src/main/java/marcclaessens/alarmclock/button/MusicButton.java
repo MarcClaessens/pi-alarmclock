@@ -26,9 +26,9 @@ class MusicButton extends AbstractIconGlowButton {
 		PLAYING = !PLAYING;
 
 		if (PLAYING) {
-			getContext().alarmClock().playSound(SoundSource.RADIO);
+			getContext().alarmClock().playSound(SoundSource.RADIO_CHANNEL);
 		} else {
-			getContext().alarmClock().stopSound();
+			getContext().alarmClock().stopSound(SoundSource.RADIO_CHANNEL);
 		}
 		for (MusicButton b : INSTANCES) {
 			b.setIcon(PLAYING);

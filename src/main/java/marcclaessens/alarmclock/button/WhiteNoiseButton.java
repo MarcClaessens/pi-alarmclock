@@ -22,9 +22,9 @@ class WhiteNoiseButton extends AbstractIconGlowButton {
 		playing = !playing;
 
 		if (playing) {
-			getContext().alarmClock().playSound(SoundSource.WHITENOICE);
+			getContext().alarmClock().playSound(SoundSource.WHITENOISE);
 		} else {
-			getContext().alarmClock().stopSound();
+			getContext().alarmClock().stopSound(SoundSource.WHITENOISE);
 		}
 		setIcon(playing);
 	}

@@ -18,7 +18,7 @@ import marcclaessens.alarmclock.sound.Mp3Player;
 
 class AlarmClockImpl implements AlarmClock, ActionListener {
 	private static final Logger LOGGER = LogManager.getLogger(AlarmClockImpl.class);
-	private static final String FIRST_ALARM = "FIRST_ALARM";
+	private static final String UPDATE_TIME = "UPDATE_TIME";
 
 	private boolean alarmOn;
 	private LocalTime alarmTime;
@@ -33,7 +33,7 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 
 	public AlarmClockImpl(Mp3Player player, AppProperties appProps) {
 		timerFirstAlarm = new Timer(500, this);
-		timerFirstAlarm.setActionCommand(FIRST_ALARM);
+		timerFirstAlarm.setActionCommand(UPDATE_TIME);
 		timerFirstAlarm.start();
 
 		this.appProps = appProps;
@@ -66,7 +66,8 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 	@Override
 	public void setAlarmOn(boolean alarmOn) {
 		if (!alarmOn) {
-			stopSound();
+			stopSound(SoundSource.RADIO_ALARM);
+			stopSound(SoundSource.REPEATING_ALARM);
 			LOGGER.debug("alarm turned off");
 		}
 		this.alarmOn = alarmOn;
@@ -74,16 +75,18 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 
 	@Override
 	public void playSound(SoundSource source) {
-		if (player.isPlaying()) {
-			stopSound();
+		if (!player.isPlaying(source)) {
+			player.stop();
 		}
-		player.play(source.getSound());
+		player.play(source);
 
 	}
 
 	@Override
-	public void stopSound() {
-		player.stop();
+	public void stopSound(SoundSource source) {
+		if (player.isPlaying(source)) {
+			player.stop();
+		}
 	}
 
 	@Override
@@ -93,10 +96,10 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 
 	@Override
 	public void changeRadioChannel(String radioChannel) {
-		SoundSource.RADIO.getSound().alterSource(radioChannel);
+		SoundSource.RADIO_CHANNEL.alterSource(radioChannel);
 		appProps.setRadioAlarm(radioChannel);
-		if (player.isPlaying()) {
-			playSound(SoundSource.RADIO);
+		if (player.isPlaying(SoundSource.RADIO_CHANNEL)) {
+			playSound(SoundSource.RADIO_CHANNEL);
 		}
 	}
 
@@ -107,7 +110,7 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		if (FIRST_ALARM.equals(ae.getActionCommand())) {
+		if (UPDATE_TIME.equals(ae.getActionCommand())) {
 			final LocalTime t = LocalTime.now();
 			if (!timelisteners.isEmpty()) {
 				timelisteners.parallelStream().forEach(l -> l.updateCurrentTime(t));
@@ -115,11 +118,11 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 			if (alarmOn) {
 				if (isAlarmTime(t)) {
 					if (!player.isPlaying()) {
-						playSound(SoundSource.RADIO);
+						playSound(SoundSource.RADIO_ALARM);
 					}
 				} else if (isSecondAlarmTime(t)) { // repeat alarm until toggled off
-					if (!player.isPlaying(SoundSource.ALARM.getSound())) {
-						playSound(SoundSource.ALARM);
+					if (!player.isPlaying(SoundSource.REPEATING_ALARM)) {
+						playSound(SoundSource.REPEATING_ALARM);
 					}
 				}
 			}

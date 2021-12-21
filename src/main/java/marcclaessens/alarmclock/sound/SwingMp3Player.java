@@ -18,6 +18,7 @@ public class SwingMp3Player extends Mp3Player implements Runnable {
 	public SwingMp3Player(String mixerName) {
 		super(mixerName);
 		runner = new Thread(this, "SwingMp3Player");
+		runner.setDaemon(true);
 		runner.start();
 	}
 
@@ -31,6 +32,7 @@ public class SwingMp3Player extends Mp3Player implements Runnable {
 					super.play();
 					if (getSound() == null || sound.getDelayMillis() == -1) {
 						LOGGER.info("Finished playing {}", sound);
+						sound = null;
 					} else {
 						sleep(sound.getDelayMillis());
 					}

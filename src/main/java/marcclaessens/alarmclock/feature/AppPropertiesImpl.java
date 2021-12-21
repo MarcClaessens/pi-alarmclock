@@ -35,9 +35,10 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 			LOGGER.error(ioe);
 		}
 
-		SoundSource.RADIO.setSource(getRadioAlarm(), getRadioChannelDelayMillis());
-		SoundSource.ALARM.setSource(getLoudAlarm(), getLoudAlarmDelayMillis());
-		SoundSource.WHITENOICE.setSource(getWhiteNoiseSource(), getWhiteNoiseDelayMillis());
+		SoundSource.RADIO_CHANNEL.setSource(getRadioAlarm(), getRadioChannelDelayMillis());
+		SoundSource.RADIO_ALARM.setSource(getRadioAlarm(), getRadioChannelDelayMillis());
+		SoundSource.REPEATING_ALARM.setSource(getLoudAlarm(), getLoudAlarmDelayMillis());
+		SoundSource.WHITENOISE.setSource(getWhiteNoiseSource(), getWhiteNoiseDelayMillis());
 	}
 
 	private CharIcon charprop(String key) {

@@ -25,7 +25,7 @@ public interface AlarmClock {
 
 	void playSound(SoundSource source);
 
-	void stopSound();
+	void stopSound(SoundSource source);
 
 	void changeRadioChannel(String radioChannel);
 }

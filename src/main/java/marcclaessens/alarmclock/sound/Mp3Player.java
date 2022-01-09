@@ -91,7 +91,7 @@ public class Mp3Player {
 	}
 
 	public synchronized boolean isPlaying(Sound sound) {
-		return playing && sound.equals(this.sound);
+		return sound.equals(this.sound);
 	}
 
 }

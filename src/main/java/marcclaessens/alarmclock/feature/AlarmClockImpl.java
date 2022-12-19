@@ -134,7 +134,7 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 			return false;
 		} else {
 			long duration = Duration.between(alarmTime, t).toMillis();
-			return duration > 0 && duration < 1500;
+			return duration > 0 && duration < 500;
 		}
 	}
 
@@ -144,7 +144,7 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 		} else {
 			LocalTime secondAlarm = alarmTime.plusMinutes(louddelay);
 			long duration = Duration.between(secondAlarm, t).toMillis();
-			boolean flag = duration > 0 && duration < 1500;
+			boolean flag = duration > 0 && duration < 500;
 			return flag;
 		}
 	}

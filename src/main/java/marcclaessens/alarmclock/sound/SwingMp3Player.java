@@ -40,7 +40,7 @@ public class SwingMp3Player extends Mp3Player implements Runnable {
 					LOGGER.error("Unexpected end of play", e);
 				}
 			} else {
-				sleep(250L);
+				sleep(100L);
 			}
 		}
 	}
@@ -63,7 +63,7 @@ public class SwingMp3Player extends Mp3Player implements Runnable {
 		runner.interrupt();
 		super.stop();
 		while (super.isPlaying()) {
-			sleep(250L);
+			sleep(100L);
 		}
 	}
 }

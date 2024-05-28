@@ -4,8 +4,9 @@ import java.awt.Color;
 import java.time.LocalTime;
 import java.util.List;
 
-import marcclaessens.alarmclock.feature.RadioChannelSource;
+import marcclaessens.alarmclock.feature.RadioChannel;
 import marcclaessens.alarmclock.feature.RssSource;
+import marcclaessens.alarmclock.sound.SoundSourceType;
 
 public interface AppProperties {
 	int getLoudAlarmActivationDelay();
@@ -52,12 +53,11 @@ public interface AppProperties {
 
 	int getSliderIconHeight();
 
-	List<RadioChannelSource> getRadioChannels();
+	List<RadioChannel> getRadioChannels();
 
-	void setRadioAlarm(String newUrl);
+	void setRadioAlarm(int radioChannelIndex);
 
 	String getMixer();
 
-	String getRadioAlarm();
-
+	int getSoundSourceDelay(SoundSourceType type);
 }

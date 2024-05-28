@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 
@@ -16,6 +18,8 @@ import javax.swing.JPanel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import marcclaessens.alarmclock.feature.MainContext;
 import marcclaessens.alarmclock.menu.AlarmTimeScene;
@@ -32,6 +36,19 @@ import marcclaessens.alarmclock.swing.AppJSlider;
  */
 public class Main extends JFrame implements AppScreen {
 	private static final long serialVersionUID = 1L;
+	
+	static {
+		String alternateLog4JPath = System.getProperty("log4j2.file", System.getenv("log4j2.file"));
+		if (alternateLog4JPath != null) {
+			System.out.println("loading log4j file " + alternateLog4JPath);
+			try {
+				ConfigurationSource source = new ConfigurationSource(new FileInputStream(alternateLog4JPath));
+				Configurator.initialize(null, source);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
@@ -53,12 +70,7 @@ public class Main extends JFrame implements AppScreen {
 	private JPanel currentscene;
 
 	public static void main(String[] args) throws Exception {
-		try {
-			new Main();
-		} catch (Exception e) {
-			LOGGER.error(e);
-			throw e;
-		}
+		new Main();
 	}
 
 	/**
@@ -91,8 +103,8 @@ public class Main extends JFrame implements AppScreen {
 
 			alarmtimescene = new AlarmTimeScene(context);
 			clockscene = new ClockScene(context);
-			rssscene = new RssScene(context);
 			colorscene = new ColorScene(context);
+			rssscene = new RssScene(context);
 			radiochannelscene = new RadioChannelScene(context);
 
 			registerScenes(alarmtimescene, clockscene, rssscene, colorscene, radiochannelscene);
@@ -105,7 +117,7 @@ public class Main extends JFrame implements AppScreen {
 			LOGGER.info("screen size : " + getContentPane().getWidth() + "-" + getContentPane().getHeight());
 			LOGGER.info("centerPanel size : " + centerPanel.getWidth() + "-" + centerPanel.getHeight());
 		} catch (Exception e) {
-			LOGGER.error(e);
+			LOGGER.error("startup error", e);
 			throw e;
 		}
 	}

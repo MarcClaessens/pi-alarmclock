@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,20 +13,18 @@ import org.apache.logging.log4j.Logger;
 /**
  * Sound from a web source (can be an MP3 radio stream).
  */
-public class WebMp3Sound implements Sound {
+class WebMp3Sound extends AbstractSound {
 	private static final Logger LOGGER = LogManager.getLogger(WebMp3Sound.class);
 
-	private URL url;
-	private final int delayMillis;
 
-	public WebMp3Sound(String url, int delayMillis) {
-		alterSource(url);
-		this.delayMillis = delayMillis;
+	public WebMp3Sound(SoundSourceType type, int index, String url, int delayMillis) {
+		super(type, index, url, delayMillis);
 	}
 
-	private URL getUrl(String url) {
+	
+	private URL getUrl() {
 		try {
-			return new URL(url);
+			return new URL(getSource());
 		} catch (MalformedURLException e) {
 			LOGGER.error(e);
 			return null;
@@ -33,17 +32,13 @@ public class WebMp3Sound implements Sound {
 	}
 
 	@Override
-	public int getDelayMillis() {
-		return delayMillis;
-	}
-
-	@Override
 	public InputStream getSoundStream() {
-		if (url == null) {
-			return null;
-		}
 		try {
-			return new BufferedInputStream(url.openStream());
+			URL urlImpl = getUrl();
+			URLConnection connection = urlImpl.openConnection();
+			connection.setConnectTimeout(2000);
+			connection.getInputStream();
+			return new BufferedInputStream(urlImpl.openStream());
 		} catch (IOException e) {
 			LOGGER.error(e);
 			throw new RuntimeException(e);
@@ -51,17 +46,7 @@ public class WebMp3Sound implements Sound {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof WebMp3Sound && ((WebMp3Sound) obj).url.equals(url);
-	}
-
-	@Override
 	public String toString() {
-		return "WebMp3Sound " + url;
-	}
-
-	@Override
-	public void alterSource(String url) {
-		this.url = getUrl(url);
+		return "WebMp3Sound " + getSource();
 	}
 }

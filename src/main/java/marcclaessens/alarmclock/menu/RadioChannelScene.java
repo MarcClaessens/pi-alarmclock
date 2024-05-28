@@ -8,7 +8,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import marcclaessens.alarmclock.AppContext;
-import marcclaessens.alarmclock.feature.RadioChannelSource;
+import marcclaessens.alarmclock.feature.RadioChannel;
 import marcclaessens.alarmclock.swing.AppJPanel;
 
 /**
@@ -30,10 +30,10 @@ public class RadioChannelScene extends AppJPanel {
 	}
 
 	private JPanel getTop() {
-		List<RadioChannelSource> radioChannels = getContext().props().getRadioChannels();
+		List<RadioChannel> radioChannels = getContext().props().getRadioChannels();
 		JPanel pane = new AppJPanel(getContext(), new GridLayout(radioChannels.size(), 1));
-		for (RadioChannelSource source : radioChannels) {
-			RadioChannelChoiceButton button = new RadioChannelChoiceButton(getContext(), source, buttons);
+		for (RadioChannel channel: radioChannels) {
+			RadioChannelChoiceButton button = new RadioChannelChoiceButton(getContext(), channel, buttons);
 			buttons.add(button);
 			pane.add(button);
 		}

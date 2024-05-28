@@ -18,6 +18,8 @@ import org.apache.logging.log4j.Logger;
 import marcclaessens.alarmclock.AppProperties;
 import marcclaessens.alarmclock.CharIcon;
 import marcclaessens.alarmclock.IconProvider;
+import marcclaessens.alarmclock.sound.SoundRepository;
+import marcclaessens.alarmclock.sound.SoundSourceType;
 
 class AppPropertiesImpl implements AppProperties, IconProvider {
 	private static final Logger LOGGER = LogManager.getLogger(AppPropertiesImpl.class);
@@ -25,6 +27,8 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 	private Properties props = null;
 	private Preferences prefs = Preferences.userNodeForPackage(getClass());
 
+	private List<RadioChannel> radioChannels = new ArrayList<>();
+	
 	public AppPropertiesImpl() {
 		props = new Properties();
 		File f = new File("app.properties");
@@ -35,23 +39,50 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 			LOGGER.error(ioe);
 		}
 
-		SoundSource.RADIO_CHANNEL.setSource(getRadioAlarm(), getRadioChannelDelayMillis());
-		SoundSource.RADIO_ALARM.setSource(getRadioAlarm(), getRadioChannelDelayMillis());
-		SoundSource.REPEATING_ALARM.setSource(getLoudAlarm(), getLoudAlarmDelayMillis());
-		SoundSource.WHITENOISE.setSource(getWhiteNoiseSource(), getWhiteNoiseDelayMillis());
+		registerAllSounds();
 	}
-
+	
 	private CharIcon charprop(String key) {
 		return new CharIcon(props.getProperty(key));
+	}
+
+
+	private void registerAllSounds() {
+		// RADIO_CHANNEL, RADIO_ALARM, REPEATING_ALARM, WHITENOISE;
+		final String radioAlarm = getRadioAlarm();
+		
+		LOGGER.info("Setting default radio alarm to : {} ", radioAlarm);
+		
+		SoundRepository.register(SoundSourceType.RADIO_ALARM, radioAlarm, getRadioChannelDelayMillis());
+		SoundRepository.register(SoundSourceType.REPEATING_ALARM, getLoudAlarm(), getLoudAlarmDelayMillis());
+		SoundRepository.register(SoundSourceType.WHITENOISE, getWhiteNoiseSource(), getWhiteNoiseDelayMillis());
+		
+		int count = Integer.parseInt(props.getProperty("alarm.radiochannels.count"));
+		
+		for (int i = 1; i < count + 1; i++) {
+			String prop = props.getProperty("alarm.radiochannel." + i);
+			if (prop == null) {
+				LOGGER.warn("Invalid property alarm.radiochannel.{}", i);
+			} else {
+				String entry[] = prop.split(";"); // 0 = label, 1 = url
+				SoundRepository.register(SoundSourceType.RADIO_CHANNEL, i, entry[1], getRadioChannelDelayMillis());
+				
+				radioChannels.add(new RadioChannel(i, entry[0], radioAlarm.equals(entry[1])));
+			}
+		}
+		
 	}
 
 	private String getLoudAlarm() {
 		return props.getProperty("alarm.loud.source");
 	}
 
-	@Override
-	public String getRadioAlarm() {
-		return prefs.get("alarm.radio.source", "http://icecast.vrtcdn.be/radio1-high.mp3");
+	private String getRadioAlarm() {
+		String prop = props.getProperty("alarm.radiochannel.1");
+		if (prop != null) {
+			prop = prop.split(";")[1]; // 0 = label, 1 = url
+		}
+		return prefs.get("alarm.radio.source", prop);
 	}
 
 	private String getWhiteNoiseSource() {
@@ -59,19 +90,17 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 	}
 
 	@Override
-	public void setRadioAlarm(String newUrl) {
-		prefs.put("alarm.radio.source", newUrl);
+	public void setRadioAlarm(int radioChannelIndex) {
+		String prop = props.getProperty("alarm.radiochannel." + radioChannelIndex);
+		String entry[] = prop.split(";"); // 0 = label, 1 = url
+		
+		LOGGER.info("Changing default radio alarm to : {} ", entry[1]);
+		prefs.put("alarm.radio.source", entry[1]);
 	}
 
 	@Override
-	public List<RadioChannelSource> getRadioChannels() {
-		int count = Integer.parseInt(props.getProperty("alarm.radiochannels.count"));
-		List<RadioChannelSource> channels = new ArrayList<>();
-		for (int i = 1; i < count + 1; i++) {
-			String entry[] = props.getProperty("alarm.radiochannel." + i).split(";");
-			channels.add(new RadioChannelSource(entry[0], entry[1]));
-		}
-		return channels;
+	public List<RadioChannel> getRadioChannels() {
+		return radioChannels;
 	}
 
 	@Override
@@ -93,6 +122,16 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 		return intprop("alarm.loud.delayMillis", "5000");
 	}
 
+	public int getSoundSourceDelay(SoundSourceType type) {
+		switch (type) {
+			case RADIO_ALARM: return getLoudAlarmActivationDelay();
+			case RADIO_CHANNEL: return getRadioChannelDelayMillis();
+			case REPEATING_ALARM: return getLoudAlarmDelayMillis();
+			case WHITENOISE: return getWhiteNoiseDelayMillis();
+			default : throw new IllegalArgumentException("Invalid sound source type " + type );
+		}
+	}
+	
 	private int getRadioChannelDelayMillis() {
 		return intprop("alarm.radiochannels.delaymillis", "250");
 	}

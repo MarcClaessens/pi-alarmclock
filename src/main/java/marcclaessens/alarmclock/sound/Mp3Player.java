@@ -13,7 +13,8 @@ import javazoom.jl.player.Player;
 
 public class Mp3Player {
 	private static final Logger LOGGER = LogManager.getLogger(Mp3Player.class);
-
+	private static boolean mixerListLogged;
+	
 	private final String mixerName;
 	private Player player = null;
 	private boolean playing = false;
@@ -33,6 +34,26 @@ public class Mp3Player {
 		play();
 	}
 
+	public synchronized boolean isPlaying(Sound sound) {
+		return sound.equals(this.sound);
+	}
+	
+
+	public synchronized boolean isPlaying() {
+		return playing;
+	}
+
+	public void stop() {
+		if (player != null) {
+			player.close();
+			player = null;
+			sound = null;
+			playing = false;
+		}
+	}
+
+
+	
 	protected void play() {
 		if (sound != null) {
 			try (InputStream is = sound.getSoundStream()) {
@@ -40,7 +61,7 @@ public class Mp3Player {
 				playing = true;
 				player.play();
 			} catch (Exception e) {
-				LOGGER.error(e);
+				LOGGER.error("Play error", e);
 			} finally {
 				playing = false;
 			}
@@ -60,12 +81,17 @@ public class Mp3Player {
 		Mixer.Info[] mixers = AudioSystem.getMixerInfo();
 		for (Mixer.Info mixer : mixers) {
 			if (mixer.getName().equals(mixerName)) {
-				LOGGER.debug("<active> Mixer found with name '" + mixer.getName() + "' and description "
+				if (!mixerListLogged) { 
+					LOGGER.debug("<active> Mixer found with name '" + mixer.getName() + "' and description "
 						+ mixer.getDescription());
+					mixerListLogged = true;
+				}
 				foundMixer = AudioSystem.getMixer(mixer);
 			} else {
-				LOGGER.debug("         Mixer found with name '" + mixer.getName() + "' and description "
+				if (!mixerListLogged) { 
+					LOGGER.debug("         Mixer found with name '" + mixer.getName() + "' and description "
 						+ mixer.getDescription());
+				}
 			}
 		}
 
@@ -75,23 +101,6 @@ public class Mp3Player {
 		return new MixerJavaSoundAudioDevice(foundMixer);
 	}
 
-	/**
-	 * Stop playing.
-	 */
-	public void stop() {
-		if (player != null) {
-			player.close();
-			player = null;
-			sound = null;
-		}
-	}
 
-	public synchronized boolean isPlaying() {
-		return playing;
-	}
-
-	public synchronized boolean isPlaying(Sound sound) {
-		return sound.equals(this.sound);
-	}
 
 }

@@ -15,6 +15,9 @@ import org.apache.logging.log4j.Logger;
 import marcclaessens.alarmclock.AlarmClock;
 import marcclaessens.alarmclock.AppProperties;
 import marcclaessens.alarmclock.sound.Mp3Player;
+import marcclaessens.alarmclock.sound.Sound;
+import marcclaessens.alarmclock.sound.SoundRepository;
+import marcclaessens.alarmclock.sound.SoundSourceType;
 
 class AlarmClockImpl implements AlarmClock, ActionListener {
 	private static final Logger LOGGER = LogManager.getLogger(AlarmClockImpl.class);
@@ -66,15 +69,15 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 	@Override
 	public void setAlarmOn(boolean alarmOn) {
 		if (!alarmOn) {
-			stopSound(SoundSource.RADIO_ALARM);
-			stopSound(SoundSource.REPEATING_ALARM);
+			stopAnySound();
+			stopSound(SoundRepository.get(SoundSourceType.REPEATING_ALARM));
 			LOGGER.debug("alarm turned off");
 		}
 		this.alarmOn = alarmOn;
 	}
 
 	@Override
-	public void playSound(SoundSource source) {
+	public void playSound(Sound source) {
 		if (!player.isPlaying(source)) {
 			player.stop();
 		}
@@ -83,7 +86,12 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 	}
 
 	@Override
-	public void stopSound(SoundSource source) {
+	public void stopAnySound() {
+		player.stop();
+	}
+	
+	@Override
+	public void stopSound(Sound source) {
 		if (player.isPlaying(source)) {
 			player.stop();
 		}
@@ -95,11 +103,11 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 	}
 
 	@Override
-	public void changeRadioChannel(String radioChannel) {
-		SoundSource.RADIO_CHANNEL.alterSource(radioChannel);
-		appProps.setRadioAlarm(radioChannel);
-		if (player.isPlaying(SoundSource.RADIO_CHANNEL)) {
-			playSound(SoundSource.RADIO_CHANNEL);
+	public void changeRadioChannel(int index) {
+		Sound newSound = SoundRepository.get(SoundSourceType.RADIO_CHANNEL, index);
+		appProps.setRadioAlarm(index);
+		if (! player.isPlaying(newSound)) {
+			playSound(newSound);
 		}
 	}
 
@@ -117,12 +125,14 @@ class AlarmClockImpl implements AlarmClock, ActionListener {
 			}
 			if (alarmOn) {
 				if (isAlarmTime(t)) {
-					if (!player.isPlaying()) {
-						playSound(SoundSource.RADIO_ALARM);
+					Sound expectedSound = SoundRepository.get(SoundSourceType.RADIO_ALARM);
+					if (!player.isPlaying(expectedSound)) {
+						playSound(expectedSound);
 					}
 				} else if (isSecondAlarmTime(t)) { // repeat alarm until toggled off
-					if (!player.isPlaying(SoundSource.REPEATING_ALARM)) {
-						playSound(SoundSource.REPEATING_ALARM);
+					Sound expectedSound = SoundRepository.get(SoundSourceType.REPEATING_ALARM);
+					if (!player.isPlaying(expectedSound)) {
+						playSound(expectedSound);
 					}
 				}
 			}

@@ -38,6 +38,7 @@ public class SwingMp3Player extends Mp3Player implements Runnable {
 					}
 				} catch (Exception e) {
 					LOGGER.error("Unexpected end of play", e);
+					sleep(5000);
 				}
 			} else {
 				sleep(100L);

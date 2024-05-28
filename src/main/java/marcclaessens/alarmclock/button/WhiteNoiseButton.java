@@ -3,7 +3,8 @@ package marcclaessens.alarmclock.button;
 import java.awt.event.ActionEvent;
 
 import marcclaessens.alarmclock.AppContext;
-import marcclaessens.alarmclock.feature.SoundSource;
+import marcclaessens.alarmclock.sound.SoundRepository;
+import marcclaessens.alarmclock.sound.SoundSourceType;
 import marcclaessens.alarmclock.swing.AbstractIconGlowButton;
 
 /**
@@ -22,9 +23,9 @@ class WhiteNoiseButton extends AbstractIconGlowButton {
 		playing = !playing;
 
 		if (playing) {
-			getContext().alarmClock().playSound(SoundSource.WHITENOISE);
+			getContext().alarmClock().playSound(SoundRepository.get(SoundSourceType.WHITENOISE));
 		} else {
-			getContext().alarmClock().stopSound(SoundSource.WHITENOISE);
+			getContext().alarmClock().stopSound(SoundRepository.get(SoundSourceType.WHITENOISE));
 		}
 		setIcon(playing);
 	}

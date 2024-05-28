@@ -4,7 +4,7 @@ import java.time.LocalTime;
 
 import marcclaessens.alarmclock.feature.AlarmTimeListener;
 import marcclaessens.alarmclock.feature.CurrentTimeListener;
-import marcclaessens.alarmclock.feature.SoundSource;
+import marcclaessens.alarmclock.sound.Sound;
 
 public interface AlarmClock {
 	void setAlarmOn(boolean alarmOn);
@@ -23,9 +23,11 @@ public interface AlarmClock {
 
 	void saveAlarmTime();
 
-	void playSound(SoundSource source);
+	void playSound(Sound source);
 
-	void stopSound(SoundSource source);
+	void stopAnySound();
+	
+	void stopSound(Sound source);
 
-	void changeRadioChannel(String radioChannel);
+	void changeRadioChannel(int radioChannelIndex);
 }

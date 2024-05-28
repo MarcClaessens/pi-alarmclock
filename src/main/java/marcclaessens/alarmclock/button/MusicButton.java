@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import marcclaessens.alarmclock.AppContext;
-import marcclaessens.alarmclock.feature.SoundSource;
+import marcclaessens.alarmclock.sound.SoundRepository;
+import marcclaessens.alarmclock.sound.SoundSourceType;
 import marcclaessens.alarmclock.swing.AbstractIconGlowButton;
 
 /**
@@ -26,9 +27,9 @@ class MusicButton extends AbstractIconGlowButton {
 		PLAYING = !PLAYING;
 
 		if (PLAYING) {
-			getContext().alarmClock().playSound(SoundSource.RADIO_CHANNEL);
+			getContext().alarmClock().playSound(SoundRepository.get(SoundSourceType.RADIO_ALARM));
 		} else {
-			getContext().alarmClock().stopSound(SoundSource.RADIO_CHANNEL);
+			getContext().alarmClock().stopAnySound();
 		}
 		for (MusicButton b : INSTANCES) {
 			b.setIcon(PLAYING);

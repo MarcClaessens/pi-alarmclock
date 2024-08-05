@@ -11,12 +11,12 @@
 		<json.version>20240303</json.version>
 		<log4j.version>2.23.1</log4j.version>
 		<rome.version>2.1.0</rome.version>
-		<commons.lang.version>3.14.0</commons.lang.version>
+		<commons.lang.version>3.15.0</commons.lang.version>
 		
 		<!-- plugins -->
 		<mvn.assembly.version>3.7.1</mvn.assembly.version>
 		<mvn.compiler.version>3.13.0</mvn.compiler.version>
-		<mvn.enforcer.version>3.4.1</mvn.enforcer.version>
+		<mvn.enforcer.version>3.5.0</mvn.enforcer.version>
 		<mvn.jar.version>3.4.1</mvn.jar.version>
 	</properties>
 	<dependencies>

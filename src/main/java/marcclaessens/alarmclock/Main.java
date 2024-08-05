@@ -124,9 +124,11 @@ public class Main extends JFrame implements AppScreen {
 
 	private void setFullScreen() {
 		if (context.props().getFullScreen()) {
+			LOGGER.debug("Setting full screen");
 			setUndecorated(true);
 			GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].setFullScreenWindow(this);
 		} else {
+			LOGGER.debug("Setting default size 800x600");
 			setSize(new Dimension(800, 600));
 		}
 	}

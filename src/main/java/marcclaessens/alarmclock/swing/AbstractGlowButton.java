@@ -81,5 +81,6 @@ public abstract class AbstractGlowButton extends JButton implements ColorChangeL
 
 	@Override
 	public void setContentAreaFilled(boolean b) {
+		// do nothing
 	}
 }

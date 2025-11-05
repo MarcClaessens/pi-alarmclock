@@ -122,6 +122,7 @@ class AppPropertiesImpl implements AppProperties, IconProvider {
 		return intprop("alarm.loud.delayMillis", "5000");
 	}
 
+	@Override
 	public int getSoundSourceDelay(SoundSourceType type) {
 		switch (type) {
 			case RADIO_ALARM: return getLoudAlarmActivationDelay();

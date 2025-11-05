@@ -40,6 +40,8 @@ public enum AppFonts {
 		case INVISIBLE_SPACING:
 			setInvisibleFont(c, "Sans-serif");
 			break;
+		default:
+			setFontAndColor(c, "Sans-serif");
 		}
 	}
 

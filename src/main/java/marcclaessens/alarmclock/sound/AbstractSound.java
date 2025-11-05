@@ -1,7 +1,5 @@
 package marcclaessens.alarmclock.sound;
 
-import java.util.Objects;
-
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -26,6 +24,7 @@ abstract class AbstractSound implements Sound, Comparable<AbstractSound> {
 		return type;
 	}
 
+	@Override
 	public final int getDelayMillis() {
 		return delayMillis;
 	}
@@ -34,12 +33,12 @@ abstract class AbstractSound implements Sound, Comparable<AbstractSound> {
 		return source;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof AbstractSound s) {
-			return Objects.equals(type, s.type) && Objects.equals(index, s.index);
-		} else {
-			return false;
+			return type == s.type && index == s.index;
 		}
+		return false;
 	}
 	
 	@Override

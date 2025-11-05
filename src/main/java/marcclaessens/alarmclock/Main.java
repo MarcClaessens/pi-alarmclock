@@ -10,14 +10,17 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.text.ParseException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -36,14 +39,16 @@ import marcclaessens.alarmclock.swing.AppJSlider;
  */
 public class Main extends JFrame implements AppScreen {
 	private static final long serialVersionUID = 1L;
-	
+
 	static {
 		String alternateLog4JPath = System.getProperty("log4j2.file", System.getenv("log4j2.file"));
 		if (alternateLog4JPath != null) {
 			System.out.println("loading log4j file " + alternateLog4JPath);
-			try {
-				ConfigurationSource source = new ConfigurationSource(new FileInputStream(alternateLog4JPath));
-				Configurator.initialize(null, source);
+			try (FileInputStream fis = new FileInputStream(alternateLog4JPath)) {
+				ConfigurationSource source = new ConfigurationSource(fis);
+				try (LoggerContext context = Configurator.initialize(null, source)) {
+					// nothing to do here, just initializing log4j
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -78,7 +83,7 @@ public class Main extends JFrame implements AppScreen {
 	 */
 	public Main() throws Exception {
 		try {
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			getRootPane().setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 
 			loadFonts("/fonts/digital-7-(mono).ttf", "/fonts/fa-solid-900.ttf",
@@ -150,12 +155,14 @@ public class Main extends JFrame implements AppScreen {
 		}
 	}
 
-	private void loadFonts(String... resources) throws Exception {
+	private static void loadFonts(String... resources) throws Exception {
 		for (String resource : resources) {
-			Font font = Font.createFont(Font.TRUETYPE_FONT, Main.class.getResource(resource).openStream());
-			font.deriveFont(Font.PLAIN, 18);
-			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
-			LOGGER.debug("Loaded font : " + font);
+			try (InputStream is = Main.class.getResource(resource).openStream()) {
+				Font font = Font.createFont(Font.TRUETYPE_FONT, is);
+				font.deriveFont(Font.PLAIN, 18);
+				GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+				LOGGER.debug("Loaded font : " + font);
+			}
 		}
 	}
 

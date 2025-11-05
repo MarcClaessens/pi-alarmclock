@@ -14,7 +14,7 @@ import javazoom.jl.player.Player;
 public class Mp3Player {
 	private static final Logger LOGGER = LogManager.getLogger(Mp3Player.class);
 	private static boolean mixerListLogged;
-	
+
 	private final String mixerName;
 	private Player player = null;
 	private boolean playing = false;
@@ -37,7 +37,6 @@ public class Mp3Player {
 	public synchronized boolean isPlaying(Sound sound) {
 		return sound.equals(this.sound);
 	}
-	
 
 	public synchronized boolean isPlaying() {
 		return playing;
@@ -52,8 +51,6 @@ public class Mp3Player {
 		}
 	}
 
-
-	
 	protected void play() {
 		if (sound != null) {
 			try (InputStream is = sound.getSoundStream()) {
@@ -81,16 +78,16 @@ public class Mp3Player {
 		Mixer.Info[] mixers = AudioSystem.getMixerInfo();
 		for (Mixer.Info mixer : mixers) {
 			if (mixer.getName().equals(mixerName)) {
-				if (!mixerListLogged) { 
+				if (!mixerListLogged) {
 					LOGGER.debug("<active> Mixer found with name '" + mixer.getName() + "' and description "
-						+ mixer.getDescription());
+							+ mixer.getDescription());
 					mixerListLogged = true;
 				}
 				foundMixer = AudioSystem.getMixer(mixer);
 			} else {
-				if (!mixerListLogged) { 
+				if (!mixerListLogged) {
 					LOGGER.debug("         Mixer found with name '" + mixer.getName() + "' and description "
-						+ mixer.getDescription());
+							+ mixer.getDescription());
 				}
 			}
 		}
@@ -100,7 +97,5 @@ public class Mp3Player {
 		}
 		return new MixerJavaSoundAudioDevice(foundMixer);
 	}
-
-
 
 }

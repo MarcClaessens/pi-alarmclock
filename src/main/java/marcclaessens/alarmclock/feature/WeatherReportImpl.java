@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +75,7 @@ class WeatherReportImpl implements WeatherReport, ActionListener {
 
     private String getWeatherReport() {
         try {
-            URL url = new URL(source);
+            URL url = new URI(source).toURL();
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             String line = null;
             try (InputStreamReader in = new InputStreamReader((InputStream) conn.getContent())) {
@@ -82,7 +84,7 @@ class WeatherReportImpl implements WeatherReport, ActionListener {
             }
             conn.disconnect();
             return parseLine(line);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             LOGGER.error(e);
         }
         return null;

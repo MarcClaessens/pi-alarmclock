@@ -46,7 +46,7 @@ public class SwingMp3Player extends Mp3Player implements Runnable {
 		}
 	}
 
-	private void sleep(long time) {
+	private static void sleep(long time) {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {

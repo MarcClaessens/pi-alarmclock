@@ -20,7 +20,7 @@ class PowerButton extends AbstractIconGlowButton {
 	protected void clicked(ActionEvent event) {
 		try {
 
-			Process p = Runtime.getRuntime().exec("sudo shutdown -h now");
+			Process p = new ProcessBuilder().command("sudo", "shutdown", "-h", "now").start();
 			p.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();

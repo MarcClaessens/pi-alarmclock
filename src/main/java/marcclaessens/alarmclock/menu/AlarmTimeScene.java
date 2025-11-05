@@ -70,7 +70,7 @@ public class AlarmTimeScene extends AppJPanel {
 		return grouppanel;
 	}
 
-	private JComponent blank(int blanks) {
+	private static JComponent blank(int blanks) {
 		JLabel label = new AppJLabel(AppFonts.INVISIBLE_SPACING);
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < blanks; i++) {

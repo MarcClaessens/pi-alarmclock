@@ -4,7 +4,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import marcclaessens.alarmclock.AppContext;
 import marcclaessens.alarmclock.AppFonts;
@@ -28,8 +28,8 @@ class ClockTimeLabel extends AppJLabel implements CurrentTimeListener, AlarmTime
 	public ClockTimeLabel(AppContext context, boolean registerListener) {
 		super("00:00", AppFonts.CLOCK);
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 40, 0));
-		setHorizontalAlignment(JLabel.CENTER);
-		setVerticalAlignment(JLabel.CENTER);
+		setHorizontalAlignment(SwingConstants.CENTER);
+		setVerticalAlignment(SwingConstants.CENTER);
 
 		if (registerListener) {
 			context.alarmClock().registerTimeListener(this);
